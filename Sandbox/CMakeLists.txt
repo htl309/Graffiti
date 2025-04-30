@@ -1,16 +1,23 @@
 
 include_directories(
-${CMAKE_SOURCE_DIR}/Graffiti/src
+${CMAKE_SOURCE_DIR}/Graffiti
 )
 link_directories(
 ${CMAKE_SOURCE_DIR}/build/Graffiti/Release
 )
-add_executable(Sandbox
 
-src/Sandbox.cpp
+
+
+
+add_executable(Sandbox
+Sandbox.cpp
+
 )
+target_compile_definitions(Sandbox PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_link_libraries(Sandbox
 Graffiti.lib
+glfw3.lib
+imgui.lib
 )
 
 

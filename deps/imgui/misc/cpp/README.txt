@@ -5,9 +5,6 @@ imgui_stdlib.h + imgui_stdlib.cpp
 
 imgui_scoped.h
   [Experimental, not currently in main repository]
-  Additional header file with some RAII-style wrappers for common Dear ImGui functions.
+  Additional header file with some RAII-style wrappers for common ImGui functions.
   Try by merging: https://github.com/ocornut/imgui/pull/2197
   Discuss at: https://github.com/ocornut/imgui/issues/2096
-
-See more C++ related extension (fmt, RAII, syntaxis sugar) on Wiki:
-  https://github.com/ocornut/imgui/wiki/Useful-Extensions#cness
