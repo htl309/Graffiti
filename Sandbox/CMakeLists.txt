@@ -18,6 +18,7 @@ target_link_libraries(Sandbox
 Graffiti.lib
 glfw3.lib
 imgui.lib
+glad.lib
 )
 
 

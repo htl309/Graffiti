@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.18)
 project(Graffiti_Engine
     VERSION 0.1.0
     DESCRIPTION "SDU ZhengQi"
-    LANGUAGES CXX
+    LANGUAGES C CXX
 )
 
 set(CMAKE_CXX_STANDARD 17)
@@ -19,6 +19,7 @@ deps/glad/include
 
 link_directories(
 deps/GLFW/lib
+deps/glad/src
 )
 add_subdirectory(Graffiti)
 add_subdirectory(Sandbox)
