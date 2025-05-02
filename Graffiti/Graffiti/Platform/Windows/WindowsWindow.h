@@ -2,7 +2,7 @@
 #include"gfpch.h"
 #include"Graffiti/Window.h"
 #include"GLFW/glfw3.h"
-#include "Graffiti/Platform/Opengl/OpenglContext.h"
+#include "Graffiti/Graphic/Opengl/OpenglContext.h"
 namespace Graffiti {
 
 	class GRAFFITI_API WindowsWindow:public Window

@@ -3,7 +3,7 @@
 #include"Buffer.h"
 
 #include"RenderAPI.h"
-#include"Graffiti/Platform/Opengl/OpenglBuffer.h"
+#include"Graffiti/Graphic/Opengl/OpenglBuffer.h"
 namespace Graffiti {
 
 

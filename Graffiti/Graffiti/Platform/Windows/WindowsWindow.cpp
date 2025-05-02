@@ -4,7 +4,7 @@
 #include "Graffiti/Events/MouseEvent.h"
 #include "Graffiti/Events/KeyEvent.h"
 
-#include<glad/glad.h>
+
 namespace Graffiti {
 
 	static bool s_GLFWInitialized = false;

@@ -2,7 +2,7 @@
 #include"VertexArray.h"
 #include"RenderAPI.h"
 
-#include"Graffiti/Platform/Opengl/OpenglVertexArray.h"
+#include"Graffiti/Graphic/Opengl/OpenglVertexArray.h"
 namespace Graffiti {
 
 	std::shared_ptr<VertexArray> VertexArray::Create()
