@@ -1,12 +1,14 @@
 #pragma once
 #include"Graffiti/Render/Buffer.h"
+#include "Graffiti/Scene/Vertex.h"
+
 namespace Graffiti {
 
-	class OpenglVertexBuffer:public VertexBuffer
+	class OpenGLVertexBuffer:public VertexBuffer
 	{
 	public:
-		OpenglVertexBuffer(float* vertices, uint32_t size);
-		virtual ~OpenglVertexBuffer();
+		OpenGLVertexBuffer(std::vector<Vertex>& vertices, uint32_t count);
+		virtual ~OpenGLVertexBuffer();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -19,11 +21,11 @@ namespace Graffiti {
 		BufferLayout m_BufferLayout;
 	};
 
-	class OpenglIndexBuffer :public IndexBuffer
+	class OpenGLIndexBuffer :public IndexBuffer
 	{
 	public:
-		OpenglIndexBuffer(uint32_t* indices, uint32_t count);
-		virtual ~OpenglIndexBuffer();
+		OpenGLIndexBuffer(std::vector<uint32_t>& indices, uint32_t count);
+		virtual ~OpenGLIndexBuffer();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -34,6 +36,17 @@ namespace Graffiti {
 
 		uint32_t m_Count;
 	};
+
+	class OpenGLUniformBuffer : public UniformBuffer{
+		public:
+			OpenGLUniformBuffer(uint32_t size ,uint32_t count, uint32_t binding);
+			virtual ~OpenGLUniformBuffer();
+
+			virtual void SetData(const void* data, uint32_t size = 0, uint32_t offset = 0) override;
+		private:
+			uint32_t m_RenderID = 0;
+	};
+	
 }
 
 

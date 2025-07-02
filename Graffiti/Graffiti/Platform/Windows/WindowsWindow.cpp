@@ -3,7 +3,11 @@
 #include "Graffiti/Events/ApplicationEvent.h"
 #include "Graffiti/Events/MouseEvent.h"
 #include "Graffiti/Events/KeyEvent.h"
-
+#include "Graffiti/Render/Renderer.h"
+//为了禁用输入法引入的文件
+#define GLFW_EXPOSE_NATIVE_WIN32 
+#include <GLFW/glfw3native.h>  // 必须包含这个才能使用 glfwGetWin32Window
+#include <windows.h>
 
 namespace Graffiti {
 
@@ -12,8 +16,8 @@ namespace Graffiti {
 	static void GLFWErrorCallback(int error, const char* description) {
 		GF_CORE_ERROR("GLFW　Error {0}: {1}", error, description);
 	}
-	Window* Window::Create(const WindowProps& props) {
-		return new WindowsWindow(props);
+    std::unique_ptr<Window> Window::Create(const WindowProps& props) {
+        return std::move(std::make_unique<WindowsWindow>(props));
 	}
 	WindowsWindow::WindowsWindow(const WindowProps& props) {
 		Init(props);
@@ -27,31 +31,29 @@ namespace Graffiti {
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
+		
 
 		GF_CORE_INFO("Creating window in Windows {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (!s_GLFWInitialized) {
 			int success = glfwInit();
-			GF_CORE_ASSERT(success, "Could not Init GLFW!")
+			GF_CORE_ASSERT(success, "Could not Init GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
+		if(Render::GetRenderAPI()== RenderAPI::API::Vulkan)  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		m_Window = glfwCreateWindow(int(props.Width), int(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
 		
-		m_Context = std::make_unique<OpenglContext>(m_Window);
-		m_Context->Init();
-
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 
-		SetVSync(true);
+		
 
 		//设置GLFW的回调函数
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window,int width, int height) {
-
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.Width = width;
 			data.Height = height;
-
+			data.framebufferResized = true;
 
 			WindowResizeEvent event(width, height);
 			data.EventCallback(event);
@@ -134,17 +136,21 @@ namespace Graffiti {
 			data.EventCallback(event);
 		});
 
+		// 禁用输入法
+		HWND hwnd = glfwGetWin32Window(m_Window);
+		ImmAssociateContext(hwnd, NULL);
 	}
 
 	void WindowsWindow::Shutdown() {
 		glfwDestroyWindow(m_Window);
 	}
 
+	void WindowsWindow::BeginFrame()
+	{
+	}
+
 	void WindowsWindow::OnUpdate() {
-		
 		glfwPollEvents();
-		m_Context->SwapBuffers();
-	
 	}
 	void WindowsWindow::SetVSync(bool enabled) {
 
@@ -159,5 +165,17 @@ namespace Graffiti {
 
 	bool WindowsWindow::IsVSync() const{
 		return  m_Data.VSync;
+	}
+	void WindowsWindow::WaitForEvents() const
+	{
+		glfwWaitEvents();
+	}
+	bool WindowsWindow::IsWindowResized() const
+	{
+		return m_Data.framebufferResized;
+	}
+	void WindowsWindow::ResetWindowResizedFlag()
+	{
+		m_Data.framebufferResized = true;
 	}
 }

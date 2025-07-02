@@ -4,45 +4,42 @@
 #include<sstream>
 
 namespace Graffiti {
-
-	class GRAFFITI_API KeyEvent :public Event {
-
+	class  KeyEvent :public Event {
 	public:
-		inline int GetKeyCode()const {return m_KeyCode;}
+		inline int GetKeyCode()const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 
-
 	protected:
-		KeyEvent(int  keycode): m_KeyCode(keycode) {} 
+		KeyEvent(int  keycode) : m_KeyCode(keycode) {}
 
 		//用整型代表是哪个按键 "ASDW"
 		int m_KeyCode;
 	};
 
-	class GRAFFITI_API KeyPressedEvent : public KeyEvent {
-		public:
-			KeyPressedEvent(int keycode, int repeatcount) :KeyEvent(keycode), m_RepeatCount(repeatcount) {};
+	class  KeyPressedEvent : public KeyEvent {
+	public:
+		KeyPressedEvent(int keycode, int repeatcount) :KeyEvent(keycode), m_RepeatCount(repeatcount) {};
 
-			inline int GetRepeatCount() const {return m_RepeatCount;}
+		inline int GetRepeatCount() const { return m_RepeatCount; }
 
-			std::string ToString() const override {
-				std::stringstream ss;
-				ss << "KeyPressedEvent: " << m_KeyCode << " (repeat = " << m_RepeatCount << ")";
-				return ss.str();
-			}
-			EVENT_CLASS_TYPE(KeyPressed);
+		std::string ToString() const override {
+			std::stringstream ss;
+			ss << "KeyPressedEvent: " << m_KeyCode << " (repeat = " << m_RepeatCount << ")";
+			return ss.str();
+		}
+		EVENT_CLASS_TYPE(KeyPressed);
 
-		private:
-			int m_RepeatCount;
-
+	private:
+		int m_RepeatCount;
 	};
 
-	class GRAFFITI_API KeyReleasedEvent : public KeyEvent
+	class  KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keycode)
-			: KeyEvent(keycode) {}
+			: KeyEvent(keycode) {
+		}
 
 		std::string ToString() const override
 		{
@@ -54,11 +51,12 @@ namespace Graffiti {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class GRAFFITI_API KeyTypedEvent : public KeyEvent
+	class  KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(int keycode)
-			: KeyEvent(keycode) {}
+			: KeyEvent(keycode) {
+		}
 
 		std::string ToString() const override
 		{

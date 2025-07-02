@@ -1,13 +1,11 @@
 #pragma once
 #include "gfpch.h"
-#include "Graffiti/Core.h"
+#include "Graffiti/base/Core.h"
 
 #include<string>
 #include<functional>
 
-
 namespace Graffiti {
-
 	enum class EventType {
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
@@ -22,12 +20,11 @@ namespace Graffiti {
 	{
 		None = 0,
 		EventCategoryApplication = GF_BIT(0),	//0000 0000
-		EventCategoryInput = GF_BIT(1),			//0000 0001	
+		EventCategoryInput = GF_BIT(1),			//0000 0001
 		EventCategoryKeyboard = GF_BIT(2),		//0000 0010
 		EventCategoryMouse = GF_BIT(3),			//0000 0100
 		EventCategoryMouseButton = GF_BIT(4)	//0000 1000
 	};
-
 
 	//两个宏定义，这样子在子类中就不用重复写函数的定义了
 #define EVENT_CLASS_TYPE(type)  static EventType GetStaticType() { return EventType::type; } \
@@ -36,8 +33,7 @@ namespace Graffiti {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override{ return category;}
 
-
-	class GRAFFITI_API Event {
+	class  Event {
 		//friend class;
 	public:
 		virtual EventType GetEventType() const = 0;
@@ -48,7 +44,7 @@ namespace Graffiti {
 		inline bool IsInCateGory(EventCategory category) {
 			return GetCategoryFlags() & category;
 		}
-	
+
 		//代表事件是否被处理
 		bool m_Handled = false;
 	};
@@ -74,6 +70,4 @@ namespace Graffiti {
 	inline std::ostream& operator<<(std::ostream& os, const Event& e) {
 		return os << e.ToString();
 	}
-
-	
 }

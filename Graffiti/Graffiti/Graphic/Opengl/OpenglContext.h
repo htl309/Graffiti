@@ -7,15 +7,18 @@ struct GLFWwindow;
 namespace Graffiti {
 	
 
-	class OpenglContext:public GraphicsContext
+	class OpenGLContext:public GraphicsContext
 	{
 	public:
-		OpenglContext(GLFWwindow* windowHandle);
+		OpenGLContext(std::unique_ptr<Window>  windowHandle);
 
 		virtual void Init() override;
+	
+		virtual void BeginFrame() override;
+		virtual void BeginSwapChainRenderPass() override;
 		virtual void SwapBuffers() override;
-	private:
-		GLFWwindow* m_WindowHandle;
+		virtual void EndFrame() override;
+	
 	};
 
 }

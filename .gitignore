@@ -1,3 +1,5 @@
 #Directories
 
 build
+imgui.ini
+*.spv

@@ -9,39 +9,46 @@ project(Graffiti_Engine
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+find_package(Vulkan REQUIRED)
+
+include_directories(${Vulkan_INCLUDE_DIRS})
+
 include_directories(
+deps/
 deps/GLFW/include
 deps/spdlog/include
-deps/imgui
 deps/glm/include
 deps/glad/include
+deps/tinygltf
 )
 
 link_directories(
 deps/GLFW/lib
 deps/glad/src
 )
-add_subdirectory(Graffiti)
-add_subdirectory(Sandbox)
-
-# -------- ImGui --------
-file(GLOB IMGUI_SRC
-    ${CMAKE_SOURCE_DIR}/deps/imgui/imgui.cpp
-    ${CMAKE_SOURCE_DIR}/deps/imgui/imgui_draw.cpp
-    ${CMAKE_SOURCE_DIR}/deps/imgui/imgui_tables.cpp
-    ${CMAKE_SOURCE_DIR}/deps/imgui/imgui_widgets.cpp
-    ${CMAKE_SOURCE_DIR}/deps/imgui/imgui_demo.cpp
-${CMAKE_SOURCE_DIR}/deps/imgui/examples/imgui_impl_glfw.cpp
-${CMAKE_SOURCE_DIR}/deps/imgui/examples/imgui_impl_opengl3.cpp
-#${CMAKE_SOURCE_DIR}/deps/imgui/examples/imgui_impl_vulkan.cpp
-
-)
-add_library(imgui STATIC ${IMGUI_SRC})
-target_include_directories(imgui PUBLIC deps/imgui deps/imgui/examples)
-target_compile_definitions(imgui PRIVATE  IMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 
+# -------- glad --------
 add_library(glad STATIC
    ${CMAKE_SOURCE_DIR}/deps/glad/src/glad.c
 )
 set_target_properties(glad PROPERTIES LINKER_LANGUAGE C)
+
+add_subdirectory(Graffiti)
+
+set(Example_Name_00  "00_Hello_Triangle")
+set(Example_Name_01 "01_Bunny")
+set(Example_Name_02 "02_GeometryShader")
+set(Example_Name_03 "03_Texture")
+set(Example_Name_04 "04_Material")
+set(Example_Name_05 "05_MeshShader")
+set(Example_Name_06 "06_PBR")
+
+add_subdirectory(Examples/00_Hello_Triangle) 
+add_subdirectory(Examples/01_Bunny) 
+add_subdirectory(Examples/02_GeometryShader) 
+add_subdirectory(Examples/03_Texture) 
+add_subdirectory(Examples/04_Material) 
+add_subdirectory(Examples/05_MeshShader) 
+add_subdirectory(Examples/06_PBR) 

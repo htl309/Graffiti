@@ -1,9 +1,9 @@
 #pragma once
-#include"Graffiti/Input.h"
+#include"Graffiti/base/Input.h"
 
 namespace Graffiti {
 
-	class GRAFFITI_API WindowsInput:public Input{
+	class  WindowsInput:public Input{
 	protected:
 		virtual bool IsKeyPressedImpl(int keycode) override;
 		virtual bool IsMouseButtonPressedImpl(int button) override;

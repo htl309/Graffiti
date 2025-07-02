@@ -1,27 +1,43 @@
 #include "gfpch.h"
-#include "OpenglContext.h"
+#include "OpenGLContext.h"
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+
 
 namespace Graffiti {
-	OpenglContext::OpenglContext(GLFWwindow* windowHandle)
-		:m_WindowHandle(windowHandle)
+	OpenGLContext::OpenGLContext(std::unique_ptr<Window> windowHandle)
 	{
+        m_WindowHandle = std::move(windowHandle);
 	}
-	void OpenglContext::Init()
+	void OpenGLContext::Init()
 	{
+       
+		glfwMakeContextCurrent(static_cast<GLFWwindow*>(m_WindowHandle->GetNativeWindow()));
 
-		glfwMakeContextCurrent(m_WindowHandle);
+        m_WindowHandle->SetVSync(1);
+
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		GF_CORE_ASSERT(status, "Failed to initialize Glad!");
 		
-		GF_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR))); 
-		GF_CORE_INFO("GPU: {0}",reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-		GF_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+		PhysicalGPU_Name = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+		int major = 0, minor = 0;
+		glGetIntegerv(GL_MAJOR_VERSION, &major);
+		glGetIntegerv(GL_MINOR_VERSION, &minor);
+		GraphicAPI_Version = "OpenGl" + std::to_string(major)+"." + std::to_string(minor);
+		
 	}
-	void OpenglContext::SwapBuffers()
+	void OpenGLContext::BeginFrame()
 	{
-		glfwSwapBuffers(m_WindowHandle);
+	}
+	void OpenGLContext::BeginSwapChainRenderPass()
+	{
+	}
+	void OpenGLContext::SwapBuffers()
+	{
+        m_WindowHandle->OnUpdate();
+		glfwSwapBuffers(static_cast<GLFWwindow*>(m_WindowHandle->GetNativeWindow()));
+	}
+	void OpenGLContext::EndFrame()
+	{
 	}
 }

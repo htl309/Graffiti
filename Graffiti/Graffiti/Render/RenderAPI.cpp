@@ -2,6 +2,7 @@
 #include"gfpch.h"
 #include"RenderAPI.h"
 namespace Graffiti {
-	RenderAPI Render::s_RenderAPI = RenderAPI::Opengl;
-	
+
+    uint32_t RenderAPI::ContextIndex = 0;
+
 }

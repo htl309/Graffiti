@@ -4,7 +4,7 @@
 
 #include<sstream>
 namespace Graffiti {
-	class GRAFFITI_API MouseMovedEvent : public Event {
+	class  MouseMovedEvent : public Event {
 	public:
 		MouseMovedEvent(float x, float y) :m_MouseX(x), m_MouseY(y) {}
 
@@ -18,13 +18,12 @@ namespace Graffiti {
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved);
-		EVENT_CLASS_CATEGORY(EventCategoryMouse| EventCategoryInput);
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
 	private:
 		float m_MouseX, m_MouseY;
-		
 	};
 
-	class GRAFFITI_API MouseScrolledEvent : public Event {
+	class  MouseScrolledEvent : public Event {
 	public:
 		MouseScrolledEvent(float x, float y) :m_OffsetX(x), m_OffsetY(y) {}
 		inline float GetXOffset() { return m_OffsetX; }
@@ -42,22 +41,20 @@ namespace Graffiti {
 		float m_OffsetX, m_OffsetY;
 	};
 
-	class GRAFFITI_API MouseButtonEvent : public Event {
+	class  MouseButtonEvent : public Event {
 	public:
-		
-		inline int GetMouseButton() { return m_Buttom; }
 
+		inline int GetMouseButton() { return m_Buttom; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton);
 	protected:
-		MouseButtonEvent(int Button) :m_Buttom(Button) {} 
+		MouseButtonEvent(int Button) :m_Buttom(Button) {}
 		int m_Buttom;
 	};
 
-	class GRAFFITI_API MouseButtonPressedEvent : public MouseButtonEvent {
+	class  MouseButtonPressedEvent : public MouseButtonEvent {
 	public:
 		MouseButtonPressedEvent(int Button) :MouseButtonEvent(Button) {}
-		
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -65,13 +62,10 @@ namespace Graffiti {
 			return ss.str();
 		}
 		EVENT_CLASS_TYPE(MouseButtonPressed);
-
-
 	};
-	class GRAFFITI_API MouseButtonReleasedEvent : public MouseButtonEvent {
+	class  MouseButtonReleasedEvent : public MouseButtonEvent {
 	public:
 		MouseButtonReleasedEvent(int Button) :MouseButtonEvent(Button) {}
-
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -79,7 +73,5 @@ namespace Graffiti {
 			return ss.str();
 		}
 		EVENT_CLASS_TYPE(MouseButtonReleased);
-
-
 	};
 }

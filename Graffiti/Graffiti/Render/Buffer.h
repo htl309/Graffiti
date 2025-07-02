@@ -1,4 +1,5 @@
 #pragma once
+#include "Graffiti/Scene/Vertex.h"
 
 namespace Graffiti {
 
@@ -36,7 +37,7 @@ namespace Graffiti {
 
 		BufferElement() {};
 		BufferElement(ShaderDataType type, const std::string& name,bool normalized=false) :
-			Name(name), Type(type), Size(0), Offset(0), Normalized(normalized){};
+			Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized){};
 
 		uint32_t GetComponentCount() const
 		{
@@ -96,7 +97,7 @@ namespace Graffiti {
 
 		virtual void SetLayout(const BufferLayout& layout)  = 0;
 		virtual const BufferLayout& GetLayout()const = 0;
-		static std::shared_ptr<VertexBuffer>  Create(float* vertices, uint32_t size);
+		static std::shared_ptr<VertexBuffer>  Create(std::vector<Vertex>& vertices, uint32_t size);
 	};
 
 	class IndexBuffer {
@@ -107,8 +108,23 @@ namespace Graffiti {
 
 		virtual uint32_t GetCount() const = 0;
 
-		static std::shared_ptr<IndexBuffer>  Create(uint32_t* indices, uint32_t count);
+		static std::shared_ptr<IndexBuffer>  Create(std::vector<uint32_t>& indices, uint32_t count);
 	
 
+	};
+
+	class UniformBuffer {
+
+	public:
+
+		virtual ~UniformBuffer() {}
+		virtual void SetData(const void* data, uint32_t size = 0, uint32_t offset = 0) = 0;
+
+	
+		static std::shared_ptr<UniformBuffer> Create(uint32_t unitsize, uint32_t count=1, uint32_t set = 0, uint32_t binding = 0);
+	
+        //OpenGl的m_Set设置为Buffer的size
+		uint32_t m_Set = 0;
+		uint32_t m_Binding;
 	};
 }
