@@ -1,10 +1,8 @@
 # Graffiti Engine
 
+[![badge](https://img.shields.io/badge/GitHub-181717?style=plastic&logo=github&logoColor=white)](https://github.com/htl309/Graffiti )[![Gitee](https://img.shields.io/badge/Gitee-FF3B3F?style=plastic&logo=gitee&logoColor=white)](https://gitee.com/htl309/Graffiti)
+
 ![Graffiti](/resource/logo/LOGO_INVERT.png "Graffiti")
-
-### 项目地址
-
-- 地址：https://github.com/htl309/Graffiti     https://gitee.com/htl309/Graffiti
 
 ### API与平台
 
@@ -46,9 +44,10 @@
 
 ### 说明
 
-有一些算法用到的架构安卓不支持，等之后在说。
+- 有一些算法用到的架构安卓不支持，等之后在说。
 
-- 代码行数统计：在Windows中项目根目录终端，运行如下命令，可以看到代码行数，现在应该有7000行
+
+- 代码行数统计：在Windows中项目根目录终端，运行如下命令，可以看到代码行数，现在应该有7000行左右吧
 
   ```powershell
   Get-ChildItem "Graffiti" -Recurse -File -Include *.cpp,*.h,*.hpp | Get-Content | Measure-Object -Line
@@ -57,10 +56,10 @@
 
 ### 预览
 
-![image-20250702111725925](resource\pic\Guide00-1.png)
+![image-20250702111725925](/resource/pic/Guide00-1.png)
 
-![image-20250702111725925](resource\pic\Readme-1.png)
+![image-20250702111725925](/resource/pic/Readme-1.png)
 
-![image-20250702112341003](resource\pic\Readme-2.png)
+![image-20250702112341003](/resource/pic/Readme-2.png)
 
-![image-20250702111751034](resource\pic\Readme-3.png)
+![image-20250702111751034](/resource/pic/Readme-3.png)
