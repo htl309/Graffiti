@@ -32,7 +32,7 @@
 - GLAD   4.6  (OpenGL API)
 - Vulkan 1.3  (Vulkan API)
 - GLFW          (Windows)
-- glm           （math、math,、math)
+- glm           （math、math、math)
 - ImGui         (UI interaction)
 - spdlog        (logging system)
 - stb              (texture loading)
