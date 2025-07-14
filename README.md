@@ -32,11 +32,12 @@
 - GLAD   4.6  (OpenGL API)
 - Vulkan 1.3  (Vulkan API)
 - GLFW          (Windows)
-- glm           （math、math、math)
+- glm              (Math、Math、Math)
 - ImGui         (UI interaction)
-- spdlog        (logging system)
-- stb              (texture loading)
-- tinygltf       (model loading)
+- spdlog        (Logging System)
+- stb              (Texture Loading)
+- tinygltf       (Model Loading)
+- meshoptimizer       (Mesh Grouping)
 
 ### Build
 
@@ -56,11 +57,23 @@
 
 ### Preview
 
+#### 00_Hello_Triangle
+
 ![image-20250702111725925](resource/pic/Guide00-1.png)
+
+#### 01_Bunny
 
 ![image-20250702111725925](resource/pic/Readme-1.png)
 
+#### 02_GeometryShader
+
 ![image-20250702112341003](resource/pic/Readme-2.png)
 
+#### 03_Texture
+
 ![image-20250702111751034](resource/pic/Readme-3.png)
+
+#### 04_PBR
+
+![image-20250714152102126](resource/pic/Readme-4.png)
 

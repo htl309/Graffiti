@@ -22,6 +22,7 @@ namespace Graffiti {
         GF_CORE_ASSERT(err.empty(), err);
         GF_CORE_ASSERT(result, "GLTFModel Loading Failed");
 
+
         for (const auto& mesh : gltfmodel.meshes) {
             for (const auto& primitive : mesh.primitives) {
                 // === 1. 获取顶点属性 ===
@@ -55,11 +56,11 @@ namespace Graffiti {
                         &gltfmodel.buffers[texView.buffer].data[texView.byteOffset + texAccessor.byteOffset]
                         );
                 }
-
+            
                 // === 2. 创建顶点数组 ===
                 const size_t vertexCount = posAccessor.count;
                 model->m_Vertices.resize(vertexCount);
-
+                
                 for (size_t i = 0; i < vertexCount; ++i) {
                     // 位置 (vec3)
                     model->m_Vertices[i].position = glm::make_vec3(&posBuffer[i * 3]);
@@ -126,12 +127,11 @@ namespace Graffiti {
         // 加载 glTF 文件（ASCII）
         bool result = loader.LoadASCIIFromFile(&gltfmodel, &err, &warn, filepath);
 
-        texture=Texture::Create( gltfmodel.images[0]);
-
+        texture = Texture::Create(gltfmodel.images[0]);
+        GF_INFO(gltfmodel.images.size());
         if (!warn.empty()) GF_CORE_WARN(warn);
         GF_CORE_ASSERT(err.empty(), err);
         GF_CORE_ASSERT(result, "GLTFModel Loading Failed");
-
         for (const auto& mesh : gltfmodel.meshes) {
             for (const auto& primitive : mesh.primitives) {
                 // === 1. 获取顶点属性 ===

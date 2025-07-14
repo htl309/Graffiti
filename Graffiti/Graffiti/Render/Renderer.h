@@ -1,7 +1,7 @@
 #pragma once
 #include"RenderCommand.h"
 #include"Graffiti/base/Camera.h"
-#include"Graffiti/base/OrthoCamera.h"
+#include"Graffiti/base/ModelLibrary.h"
 #include"Shader.h"
 namespace Graffiti {
 
@@ -20,6 +20,7 @@ namespace Graffiti {
 
 
         static void Submit(const std::shared_ptr<VertexArray>& vertexarray,const std::shared_ptr<Shader>& shader, const glm::mat4& transform = glm::mat4(1.0f));
+        static void Submit(const std::shared_ptr<ModelLibrary>& modellib,const std::shared_ptr<Shader>& shader);
         inline static RenderAPI::API GetRenderAPI() { return RenderAPI::GetRenderAPI(); }
     private:
         static SceneData m_SceneData;

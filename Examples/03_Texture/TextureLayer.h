@@ -20,7 +20,6 @@ namespace Graffiti {
         SceneData m_Scene;
 
         std::shared_ptr <VertexArray> m_CubeVertexArray;
-        std::shared_ptr <VertexArray> m_BunnyVertexArray;
         std::shared_ptr <VertexArray> m_DeerVertexArray;
 
 

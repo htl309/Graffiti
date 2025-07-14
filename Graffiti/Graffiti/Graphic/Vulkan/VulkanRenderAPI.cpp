@@ -6,6 +6,7 @@ void Graffiti::VulkanRenderAPI::Init(uint32_t contextindex)
 {
 	RenderAPI::ContextIndex = contextindex;
 	m_VulkanContext = std::dynamic_pointer_cast<VulkanContext>(GraphicsContext::G_Context[ContextIndex]);
+    vkCmdDrawMeshTasksNV = (PFN_vkCmdDrawMeshTasksNV)vkGetDeviceProcAddr(VulkanDevice::GetVulkanDevice()->device(), "vkCmdDrawMeshTasksNV");
 }
 
 void SetDepthtest(bool set) {
@@ -42,7 +43,10 @@ void Graffiti::VulkanRenderAPI::DrawIndex(const std::shared_ptr<VertexArray>& ve
 {
 	vkCmdDrawIndexed(m_VulkanContext->getCurrentCommandBuffer(), vertexarray->GetIndexBuffer()->GetCount(), 1, 0, 0, 0);
 }
-
+void Graffiti::VulkanRenderAPI::MeshShaderDraw(uint32_t taskcount)
+{
+    vkCmdDrawMeshTasksNV(m_VulkanContext->getCurrentCommandBuffer(), taskcount, 0);
+}
 void Graffiti::VulkanRenderAPI::WireframeMode()
 {
     m_State = m_State | PipelineState::WireFrame;
@@ -55,7 +59,9 @@ void Graffiti::VulkanRenderAPI::PolygonMode()
 
 void Graffiti::VulkanRenderAPI::BindPipeline(const std::string& PipelineName)
 {
+ 
     for (int i = 0; i < m_PipelineMap[PipelineName].size();i++) {
+       
         if(m_PipelineMap[PipelineName][i].IsEqualState(m_State))
         {
             vkCmdBindPipeline(m_VulkanContext->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineMap[PipelineName][i].m_Pipeline);
@@ -68,15 +74,16 @@ void Graffiti::VulkanRenderAPI::BindPipeline(const std::string& PipelineName)
                 m_PipelineMap[PipelineName][i].GetDescriptorSetData(),
                 0,
                 nullptr); 
-            return ;
+            return;
         }
     }
+
 }
 
-void Graffiti::VulkanRenderAPI::SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string& PipelineName)
+void Graffiti::VulkanRenderAPI::SetTexture( std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string& PipelineName, const std::string& ModelName)
 {
+
     std::shared_ptr<VulkanTexture> temptexture = std::dynamic_pointer_cast<VulkanTexture>(texture);
-    m_PipelineMap[PipelineName];
 
     VkDescriptorImageInfo imageInfo{};
     imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -92,16 +99,51 @@ void Graffiti::VulkanRenderAPI::SetTexture(std::shared_ptr<Texture> texture, uin
     write.descriptorCount = 1;
     write.pImageInfo = &imageInfo;
 
-    for (int i = 0; i < m_PipelineMap[PipelineName].size(); i++) {
-        if (m_PipelineMap[PipelineName][i].IsEqualState(m_State))
-        {
-            write.dstSet = m_PipelineMap[PipelineName][i].GetDescriptorSet(set);
-            vkUpdateDescriptorSets(VulkanDevice::GetVulkanDevice()->device(), 1, &write, 0, nullptr);
-            return;
+
+
+    if (!ModelName.empty()) {
+
+        if (m_new_DescriptorSet.find(ModelName) == m_new_DescriptorSet.end()) {
+           
+            VkDescriptorSet newVkDescriptorSet;
+            m_PipelineMap[PipelineName][0].GetDescriptorPool(set)->allocateDescriptor(
+                m_PipelineMap[PipelineName][0].GetDescriptorSetLayout(set)->descriptorSetLayout, 
+                newVkDescriptorSet);    
+     
+            m_new_DescriptorSet.insert({ ModelName ,newVkDescriptorSet }); 
+        }  
+        write.dstSet = m_new_DescriptorSet[ModelName];
+        vkUpdateDescriptorSets(VulkanDevice::GetVulkanDevice()->device(), 1, &write, 0, nullptr);
+
+        for (int i = 0; i < m_PipelineMap[PipelineName].size(); i++) {
+            if (m_PipelineMap[PipelineName][i].IsEqualState(m_State))
+            {
+                vkCmdBindPipeline(m_VulkanContext->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineMap[PipelineName][i].m_Pipeline);
+                vkCmdBindDescriptorSets(
+                    m_VulkanContext->getCurrentCommandBuffer(),
+                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    m_PipelineMap[PipelineName][i].GetVkPipelineLayout(),
+                    set,
+                    1,
+                    &m_new_DescriptorSet[ModelName],
+                    0,
+                    nullptr);
+                return;
+            }
+
+        }
+    }
+    else {
+        for (int i = 0; i < m_PipelineMap[PipelineName].size(); i++) {
+            if (m_PipelineMap[PipelineName][i].IsEqualState(m_State))
+            {
+                write.dstSet = m_PipelineMap[PipelineName][i].GetDescriptorSet(set);
+                vkUpdateDescriptorSets(VulkanDevice::GetVulkanDevice()->device(), 1, &write, 0, nullptr);
+                return;
+            }
         }
     }
 
-    
 }
 
 

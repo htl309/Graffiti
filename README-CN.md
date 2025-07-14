@@ -1,6 +1,6 @@
 # Graffiti Engine
 
-[![badge](https://img.shields.io/badge/GitHub-181717?style=plastic&logo=github&logoColor=white)](https://github.com/htl309/Graffiti )[![Gitee](https://img.shields.io/badge/Gitee-FF3B3F?style=plastic&logo=gitee&logoColor=white)](https://gitee.com/htl309/Graffiti)
+[![badge](https://img.shields.io/badge/GitHub-181717?style=plastic&logo=github&logoColor=white)](https://github.com/htl309/Graffiti ) [![Gitee](https://img.shields.io/badge/Gitee-FF3B3F?style=plastic&logo=gitee&logoColor=white)](https://gitee.com/htl309/Graffiti)
 
 ![Graffiti](/resource/logo/LOGO_INVERT.png "Graffiti")
 
@@ -35,6 +35,7 @@
 - spdlog        (日志系统)
 - stb              (纹理加载)
 - tinygltf       (模型加载)
+- meshoptimizer       (网格分组)
 
 ### 构建
 
@@ -53,13 +54,24 @@
   Get-ChildItem "Graffiti" -Recurse -File -Include *.cpp,*.h,*.hpp | Get-Content | Measure-Object -Line
   ```
 
-
 ### 预览
 
-![image-20250702111725925](/resource/pic/Guide00-1.png)
+#### 00_Hello_Triangle
 
-![image-20250702111725925](/resource/pic/Readme-1.png)
+![image-20250702111725925](resource/pic/Guide00-1.png)
 
-![image-20250702112341003](/resource/pic/Readme-2.png)
+#### 01_Bunny
 
-![image-20250702111751034](/resource/pic/Readme-3.png)
+![image-20250702111725925](resource/pic/Readme-1.png)
+
+#### 02_GeometryShader
+
+![image-20250702112341003](resource/pic/Readme-2.png)
+
+#### 03_Texture
+
+![image-20250702111751034](resource/pic/Readme-3.png)
+
+#### 04_PBR
+
+![image-20250714152102126](resource/pic/Readme-4.png)

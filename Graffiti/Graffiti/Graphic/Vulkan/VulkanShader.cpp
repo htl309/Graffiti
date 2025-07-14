@@ -104,7 +104,8 @@ namespace Graffiti {
 
 		m_PipelineLayout->buildDescriptorSets(); 
 		m_PipelineLayout->createPipelineLayout();	
-
+        GF_INFO("size: {0}", m_PipelineLayout->m_UniformBuffer.size());
+        GF_INFO("stoage size: {0}", m_PipelineLayout->m_StorageBuffer.size());
         std::vector<VulkanPipeline>& pipelines = m_RenderAPI->m_PipelineMap[m_Name]; 
 		
         //°ó¶¨µ½set=0,bing=0ÉÏ
@@ -112,9 +113,7 @@ namespace Graffiti {
         {
 			m_PipelineConfigInfos[i]->m_VulkanPipelineLayout = m_PipelineLayout;
 			m_PipelineConfigInfos[i]->renderPass = context->getSwapChainRenderPass();
-			
             pipelines.push_back(VulkanPipeline(m_ShaderStages, m_PipelineConfigInfos[i]));
-		
         }  
 	}
 	void VulkanShader::UploadSceneData()
@@ -123,7 +122,7 @@ namespace Graffiti {
 	}
 	void VulkanShader::SetSceneData(const SceneData& scenedata)
 	{
-		m_PipelineLayout->m_Data["u_SceneData"]->SetData(&scenedata);
+		m_PipelineLayout->m_UniformBuffer["u_SceneData"]->SetData(&scenedata);
 	}
 	void VulkanShader::UploadTransform()
 	{
@@ -139,11 +138,21 @@ namespace Graffiti {
 	}
 	void VulkanShader::SetUniformBuffer(const std::string& name, const void* value)
 	{
-        m_PipelineLayout->m_Data[name]->SetData(value);    
+        m_PipelineLayout->m_UniformBuffer[name]->SetData(value);
 	}
 	void VulkanShader::UploadUniformBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
 	{
         m_PipelineLayout->UploadUniform(name, size, count, set, binding);
+	}
+
+	void VulkanShader::SetStorageBuffer(const std::string& name, const void* value)
+	{
+		m_PipelineLayout->m_StorageBuffer[name]->SetData(value);
+	}
+
+	void VulkanShader::UploadStorageBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
+	{
+		m_PipelineLayout->UploadStorage(name, size, count, set, binding);
 	}
 
 	void VulkanShader::UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding)
@@ -151,9 +160,9 @@ namespace Graffiti {
 		m_PipelineLayout->UploadTexture(name,texture, set, binding);
 	}
 
-    void VulkanShader::SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding)
+    void VulkanShader::SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string modelname)
     {
-        m_RenderAPI->SetTexture(texture,set,binding,m_Name);
+        m_RenderAPI->SetTexture(texture, set, binding, m_Name,modelname);
     }
 	
    

@@ -29,6 +29,10 @@ namespace Graffiti {
         inline static void DrawIndex(const std::shared_ptr<VertexArray>& vertexarray) {
             s_RenderAPI->DrawIndex(vertexarray);    
         }
+        inline static void MeshShaderDraw(uint32_t taskcount) {
+            s_RenderAPI->MeshShaderDraw(taskcount);
+        }
+
         inline static void WireframeMode() {
             s_RenderAPI->WireframeMode();
         }

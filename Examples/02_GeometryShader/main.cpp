@@ -6,7 +6,7 @@ namespace Graffiti {
     class GeometryShaderLayer : public Layer {
     public:
 
-        GeometryShaderLayer() :Layer("02_GeometryShader"), m_Name("02_GeometryShader") {
+        GeometryShaderLayer() :Layer("03_GeometryShader"), m_Name("03_GeometryShader") {
             
             m_ShaderLibrary = std::make_shared<ShaderLibrary>();
 
@@ -111,7 +111,6 @@ namespace Graffiti {
             PushLayer(new GeometryShaderLayer());
         }
         ~myApplication() {
-            GF_INFO("myApplication Delete");
         }
     };
 
@@ -124,7 +123,7 @@ namespace Graffiti {
 #define GF_PLATFORM_WINDOWS 
 
 #define GF_RENDERAPI_VULKAN
-#define GF_RENDERAPI_OPENGL
+//#define GF_RENDERAPI_OPENGL
 
 #include"Graffiti/EntryPoint.h"
 

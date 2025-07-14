@@ -40,6 +40,5 @@ namespace Graffiti {
 		return GetMousePostionImpl().second;
 	}
 
-
 }
 

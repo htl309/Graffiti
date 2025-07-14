@@ -19,12 +19,14 @@ namespace Graffiti {
 
         VulkanPipelineLayout() {};
         void UploadUniform(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding);
+        void UploadStorage(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding);
         void UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding);
         //这里的vector的单元是和set一一对应，也就是说vector[0]对应的是set=0；
         std::vector <VkDescriptorSet> m_DescriptorSets;
         std::vector <std::shared_ptr <VulkanDescriptorPool>> m_DescriptorSetPools;
         std::vector <VulkanDescriptorSetLayout::Builder> m_DescriptorSetLayoutsInfos;
         std::vector <std::shared_ptr <VulkanDescriptorSetLayout>> m_DescriptorSetLayouts;
+        std::vector<std::shared_ptr	<VulkanDescriptorWriter>> m_DescriptorWriter;
 
         VkPipelineLayout m_PipelineLayout;
         //虽然初始化等于0，但是实际上肯定有1，因为得传SceneData
@@ -32,7 +34,8 @@ namespace Graffiti {
 
         //Buffer
         //前一个是名字，后一个是buffer
-        std::unordered_map<std::string, std::shared_ptr<UniformBuffer> > m_Data;
+        std::unordered_map<std::string, std::shared_ptr<UniformBuffer> > m_UniformBuffer;
+        std::unordered_map<std::string, std::shared_ptr<StorageBuffer> > m_StorageBuffer;
         std::unordered_map<std::string, std::shared_ptr<Texture> > m_Texture;
     private:
         void buildDescriptorSets();
@@ -41,7 +44,7 @@ namespace Graffiti {
     };
     class PipelineConfigInfo {
     public:
-       
+        PipelineConfigInfo() {};
         PipelineConfigInfo(PipelineState state) ;
         ~PipelineConfigInfo();
 
@@ -65,6 +68,7 @@ namespace Graffiti {
         void SetInfo(PipelineState state);
     };
 	class VulkanPipeline {
+        friend class VulkanRenderAPI;
     public:
         ~VulkanPipeline() {  }
         VulkanPipeline::VulkanPipeline(std::vector<VkPipelineShaderStageCreateInfo> ShaderStages, std::shared_ptr<PipelineConfigInfo>  configInfo)
@@ -72,7 +76,7 @@ namespace Graffiti {
             m_PipelineConfigInfo = configInfo;
 
             if (configInfo == nullptr) GF_TRACE("nullptr");
-            assert(configInfo->pipelineLayout != VK_NULL_HANDLE &&
+            assert(configInfo->m_VulkanPipelineLayout->m_PipelineLayout != VK_NULL_HANDLE &&
                 "Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
             assert(configInfo->renderPass != VK_NULL_HANDLE &&
                 "Cannot create graphics pipeline: no renderPass provided in configInfo");
@@ -103,7 +107,7 @@ namespace Graffiti {
 
             pipelineInfo.layout = configInfo->m_VulkanPipelineLayout->m_PipelineLayout;
             pipelineInfo.renderPass = configInfo->renderPass;
-            pipelineInfo.subpass = configInfo->subpass;
+            pipelineInfo.subpass = configInfo->subpass;  
             if (vkCreateGraphicsPipelines(
                 VulkanDevice::GetVulkanDevice()->device(),
                 VK_NULL_HANDLE,
@@ -112,7 +116,7 @@ namespace Graffiti {
                 nullptr,
                 &m_Pipeline) != VK_SUCCESS) {
                 throw std::runtime_error("failed to create graphics pipeline");
-            }
+            } 
         }
       
         void SetPushConstants(uint32_t size, const void* data);
@@ -124,18 +128,20 @@ namespace Graffiti {
         inline  uint32_t GetDescriptorSetCount() { return m_PipelineConfigInfo->m_VulkanPipelineLayout->m_DescriptorSets.size(); }
         inline  const VkDescriptorSet* GetDescriptorSetData() { return m_PipelineConfigInfo->m_VulkanPipelineLayout->m_DescriptorSets.data(); }
         inline  const VkDescriptorSet GetDescriptorSet(uint32_t index) { return m_PipelineConfigInfo->m_VulkanPipelineLayout->m_DescriptorSets[index]; }
+        inline std::shared_ptr	<VulkanDescriptorWriter> GetDescriptorWriter(uint32_t index) { return m_PipelineConfigInfo->m_VulkanPipelineLayout->m_DescriptorWriter[index]; }
+        inline std::shared_ptr	<VulkanDescriptorPool> GetDescriptorPool(uint32_t index) { return m_PipelineConfigInfo->m_VulkanPipelineLayout->m_DescriptorSetPools[index]; }
+        inline std::shared_ptr	<VulkanDescriptorSetLayout> GetDescriptorSetLayout(uint32_t index) { return m_PipelineConfigInfo->m_VulkanPipelineLayout->m_DescriptorSetLayouts[index]; }
+
+  
         static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
         static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
         
         
     private:
-    
-       
-    public:
+
         VkPipeline m_Pipeline = VK_NULL_HANDLE;
 
         std::shared_ptr<PipelineConfigInfo>  m_PipelineConfigInfo;
-      
   
 	};
 

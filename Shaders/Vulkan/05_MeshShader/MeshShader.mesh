@@ -1,0 +1,152 @@
+#version 450
+
+//启用meshshader
+#extension GL_NV_mesh_shader: require
+//启用uint8_t和int8_t
+#extension GL_EXT_shader_8bit_storage: require
+#extension GL_EXT_shader_16bit_storage: require
+
+
+//设置工作组中线程的大小，一个工作组有32个线程
+//将max_vertices的数量依次放入这些工作组中,要是有64个vertices，那就需要循环两次去执行
+//有些meshlet中的vertices数量没有到64.那么最后几个点就重复执行一下
+const uint myShaderGroupSize = 32;
+const uint maxvertex = 64;
+const uint maxtri = 126;
+
+//计算在myShaderGroupSize大小的一个工作组中，处理64个顶点需要几次
+//这里需要两次，因为顶点数量最大是64个，工作组大小是32个，所以需要两次
+const uint VertexLoops = (maxvertex + myShaderGroupSize - 1) / myShaderGroupSize;
+
+//计算需要循环几次才能把索引都写入
+//124个三角形也就是说有3*124个索引
+//4 * myShaderGroupSize意思是一次可以写入四个索引数字
+const uint TriangleLoops = (3 * maxtri + 4 * myShaderGroupSize - 1) / (myShaderGroupSize * 4);
+
+
+//设置工作组中线程的大小，一个工作组有32个线程
+layout(local_size_x = myShaderGroupSize) in;
+
+struct Meshlet {
+	uint vertex_offset;
+	uint triangle_offset;
+
+
+	uint vertex_count;
+	uint triangle_count;
+
+};
+//读取从CPU那里发送过来的数据
+layout(set=1,binding = 0) readonly buffer Meshlets { Meshlet meshlets[]; };
+layout(set=1,binding = 1) readonly buffer MeshletVertices { uint meshlet_vertices[]; };
+layout(set=1,binding = 2) readonly buffer MeshletTriangles { uint meshlet_triangles[]; };
+
+struct Vertex {
+		vec3 position;
+        vec3 normal;
+       	vec2 texCoord;
+        vec3 tangent;
+};
+layout(set=1,binding = 3) readonly buffer _Vertexes { Vertex vertexes[]; };
+
+struct PointLight {
+    vec4 position;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+};
+layout(set = 0, binding = 0) uniform SceneData {
+    mat4 u_ViewProjectionMatrix;
+    PointLight light;
+    vec3 viewPos;
+} scene;
+
+layout(push_constant) uniform PushConstants {
+    mat4 u_transform;
+} pushConstants;
+
+//规定输出的图元是三角形，当然也可以是线段什么的
+//规定顶点最大64个，三角形最多124个，这个是在CPU上会提前预设好的限制,目的是为了匹配GPU的限制
+//就是一个meshlet中最多只有64个顶点和124个三角形。
+layout(triangles, max_vertices = maxvertex, max_primitives = maxtri) out;
+layout(location = 0) out vec3 fragColor[];
+
+//不同的网格颜色用以达到不同网格分组的效果
+vec3 meshletcolors[10] = {
+  vec3(2,0,0), 
+  vec3(0,2,0),
+  vec3(0,0,2),
+  vec3(2,2,0),
+  vec3(2,0,2),
+  vec3(0,2,2),
+  vec3(2,1,0),
+  vec3(1.0,2,0),
+  vec3(0,1.0,2.0),
+  vec3(2,1,1)
+  };
+
+void main() {
+	
+	//获取当前工作组的ID
+	//工作组的大小在vulkan中设置，vkCmdDispatch就可以设置大小
+	//由于Group和thread都是三维的，这里只用一维的x就可以了,也只设置x就可以啦
+	uint groupIndex = gl_WorkGroupID.x;
+	//获取工作组下的当前的进程的id
+	uint groupThreadIndex = gl_LocalInvocationID.x;
+	
+	
+	//每个工作组处理一个meshlet
+	Meshlet meshlet= meshlets[groupIndex]; 
+
+	for (uint i = 0; i < VertexLoops; ++i){
+		//获取当前计算64个顶点中的那个点的索引
+		uint localVertexIndex = groupThreadIndex + i * myShaderGroupSize;
+		//要是顶点数量没有到64个，比如只有40个，那么也需要两次循环才能处理完
+		//当只有40个顶点时，第二次循环运行到后面的时候，顶点索引会溢出，那么就需要对其进行处理，规定最大的索引不超过这个meshlet的最大顶点数
+		localVertexIndex = min(localVertexIndex, meshlet.vertex_count - 1);
+		
+		//获取顶点数组的索引位置
+		uint vertexIndex=meshlet_vertices[meshlet.vertex_offset+localVertexIndex];
+
+		//在顶点数组中获取顶点
+		Vertex thisvertex = vertexes[vertexIndex];
+
+		//输出顶点位置
+		//vec4 positionWorld = pushConstants.u_transform * thisvertex.position;
+		//gl_MeshVerticesNV[localVertexIndex].gl_Position = scene.u_ViewProjectionMatrix * positionWorld;
+		gl_MeshVerticesNV[localVertexIndex].gl_Position = vec4(thisvertex.position,1.0);
+		//获取一个颜色，并进行输出
+		fragColor[localVertexIndex]= meshletcolors[groupIndex%10];
+	}
+
+	//要除个四，因为索引写入的逻辑是这样的:小索引的长度是8bit，而一个整型有32bit。因此把四个数字看成一个数字进行写入
+	//按照这样的方法，原本的索引数组o的ffset要缩小四倍sa
+	//因为四个数字被一起写入了嘛，相当于原本比如长度9的8字节索引，分为：4 4 1，三次写入。第0次，第1次，第2次
+	uint packedTriangleOffset = meshlet.triangle_offset / 4;
+
+	//这个是对索引的大小进行一个限制，以防一循环和上面的顶点一样溢出了
+	uint packedTrianglesMax = (3 * meshlet.triangle_count - 1) / 4;
+
+	for (uint i = 0; i < TriangleLoops; ++i)
+	{
+		//根据工作组和工作组中的线程获取当前需要写入的索引
+		uint localTriangleIndex = groupThreadIndex + i * myShaderGroupSize;
+		//需要写入的索引不能超过这个
+		localTriangleIndex = min(localTriangleIndex, packedTrianglesMax);
+
+		//这个函数就是写入索引的
+		//前一个参数是，从4 * localTriangleIndex的位置开始写入
+		//比如比如长度9的8字节索引，分为：4 4 1，三次写入。第0次从0位置写入，第1次从4位置写入，第2次从8位置写入
+		//注意的是，CPU里面写入的是uint8类型索引数组，而这里直接读取的是uint类型的数组。实际上这里直接把四个数组一起读取了。
+		writePackedPrimitiveIndices4x8NV(4 * localTriangleIndex, meshlet_triangles[packedTriangleOffset + localTriangleIndex]);
+		
+	}
+
+
+	//设置一下三角形的个数
+	//这个很重要，因为读取索引的时候，因为压缩的问题，最后一次读取很可能会多读几位。所以要说明一下三角形的数量
+	if (groupThreadIndex == 0) {
+    	gl_PrimitiveCountNV = meshlet.triangle_count;
+  	}
+
+}

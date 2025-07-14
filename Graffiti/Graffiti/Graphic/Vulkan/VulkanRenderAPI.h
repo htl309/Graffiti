@@ -18,20 +18,23 @@ namespace Graffiti {
         virtual void SetClearColor(const glm::vec4& color) override;
         virtual void Clear() override;
         virtual void DrawIndex(const std::shared_ptr<VertexArray>& vertexarray)  override;
-
+        virtual void MeshShaderDraw(uint32_t taskcount) override;
         virtual void WireframeMode() override;
         virtual void PolygonMode() override;
        
     private:
         void BindPipeline(const std::string& PipelineName);
-        void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string& PipelineName);
+        void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string& PipelineName, const std::string& ModelName);
 
     private:
         std::shared_ptr<VulkanContext> m_VulkanContext;
 
         //存放管线的地方
         std::unordered_map<std::string, std::vector<VulkanPipeline>> m_PipelineMap;
-
+        std::unordered_map<std::string, VkDescriptorSet> m_new_DescriptorSet;
         PipelineState m_State=PipelineState::Common;
+
+        //MeshShader的函数句柄
+        PFN_vkCmdDrawMeshTasksNV vkCmdDrawMeshTasksNV;
     };
 }

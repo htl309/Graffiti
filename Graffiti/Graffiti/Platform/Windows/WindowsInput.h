@@ -11,6 +11,7 @@ namespace Graffiti {
 		virtual std::pair<float, float> GetMousePostionImpl() override;
 		virtual float GetMouseXImpl() override;
 		virtual float GetMouseYImpl() override;
+
 	};
 
 }

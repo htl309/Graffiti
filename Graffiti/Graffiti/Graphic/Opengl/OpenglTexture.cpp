@@ -32,7 +32,7 @@ namespace Graffiti {
     {
         glGenTextures(1, &m_TextureID);
         glBindTexture(GL_TEXTURE_2D, m_TextureID);
-
+        GF_INFO("image size: {0}",image.component);
         // 图像数据格式
         GLenum format = GL_RGBA;
         switch (image.component) {
@@ -82,6 +82,7 @@ namespace Graffiti {
 	void OpenGLTexture::Bind(uint32_t slot) const
 	{
 		glBindTextureUnit(slot, m_TextureID);
+
 	}
 
 

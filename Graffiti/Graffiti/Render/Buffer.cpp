@@ -43,4 +43,16 @@ namespace Graffiti {
 
 		return nullptr;
 	}
+
+	std::shared_ptr<StorageBuffer> StorageBuffer::Create(uint32_t unitsize, uint32_t count, uint32_t set, uint32_t binding)
+	{
+		if (Render::GetRenderAPI() == RenderAPI::API::OpenGL) {
+			return std::make_shared<OpenGLStorageBuffer>(unitsize, count, binding);
+		}
+		else if (Render::GetRenderAPI() == RenderAPI::API::Vulkan) {
+			return std::make_shared<VulkanStorageBuffer>(unitsize, count, set, binding);
+		}
+
+		return nullptr;
+	}
 }

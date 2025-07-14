@@ -13,7 +13,7 @@ namespace Graffiti {
 	{
        
 		glfwMakeContextCurrent(static_cast<GLFWwindow*>(m_WindowHandle->GetNativeWindow()));
-
+		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         m_WindowHandle->SetVSync(1);
 
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

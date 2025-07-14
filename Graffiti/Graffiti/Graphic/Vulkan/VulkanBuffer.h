@@ -103,7 +103,19 @@ namespace Graffiti {
     private:
         std::unique_ptr<VulkanBuffer> m_UniformBuffer;
     };
-	
+    class VulkanStorageBuffer : public StorageBuffer
+    {
+    public:
+        VulkanStorageBuffer(uint32_t unitsize, uint32_t count, uint32_t set, uint32_t binding);
+        virtual ~VulkanStorageBuffer();
+
+        virtual void SetData(const void* data, uint32_t size = 0, uint32_t offset = 0) override;
+
+        VkDescriptorBufferInfo GetDescriptorInfo();
+    private:
+        std::unique_ptr<VulkanBuffer> m_StorageBuffer;
+    };
+    
 
    
 }

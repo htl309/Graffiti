@@ -127,4 +127,20 @@ namespace Graffiti {
 		uint32_t m_Set = 0;
 		uint32_t m_Binding;
 	};
+
+	class StorageBuffer {
+
+	public:
+
+		virtual ~StorageBuffer() {}
+		virtual void SetData(const void* data, uint32_t size = 0, uint32_t offset = 0) = 0;
+
+
+		static std::shared_ptr<StorageBuffer> Create(uint32_t unitsize, uint32_t count = 1, uint32_t set = 0, uint32_t binding = 0);
+
+		//OpenGl的m_Set设置为Buffer的size
+		uint32_t m_Set = 0;
+		uint32_t m_Binding;
+	};
+
 }

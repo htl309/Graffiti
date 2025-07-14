@@ -394,7 +394,7 @@ namespace Graffiti {
     {
         for (const auto& availablePresentMode : availablePresentModes) {
             if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                GF_CORE_INFO("Present mode: Mailbox");
+              //  GF_CORE_INFO("Present mode: Mailbox");
                 return availablePresentMode;
             }
         }

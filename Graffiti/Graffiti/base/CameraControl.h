@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include"Graffiti/base/TimeStep.h"
 #include "Graffiti/Events/ApplicationEvent.h"
+#include "Graffiti/Events/MouseEvent.h"
 namespace Graffiti {
     class CameraControl {
     public:
@@ -13,6 +14,7 @@ namespace Graffiti {
 
         void KeyMovement(TimeStep& ts);
         void MouseMovement(TimeStep& ts);
+        void MouseScroll(Event& event);
 
         void OnEvent(Event& event);
 
@@ -23,11 +25,14 @@ namespace Graffiti {
         void SetTarget(BoundingBox& b) { m_camera->SetTarget(b); }
     private:
         bool OnWindowResize(WindowResizeEvent& e);
+        bool OnFovReset(MouseScrolledEvent& e);
 
         std::shared_ptr <Camera> m_camera;
         float lastX = 0.0;
         float lastY = 0.0;
         bool m_firstMouse = true;
+        float m_fov = 45.0;
+        float m_aspect;
 
     };
 

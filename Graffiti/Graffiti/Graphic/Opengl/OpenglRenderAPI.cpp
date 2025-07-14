@@ -28,6 +28,7 @@ namespace Graffiti {
         glDisable(GL_CULL_FACE);
         SetDepthtest(true);
         glDepthFunc(GL_LESS);
+
         glClearColor(color.r, color.g, color.b, color.w); 
     }
     void OpenGLRenderAPI::Clear()
@@ -38,6 +39,11 @@ namespace Graffiti {
     void OpenGLRenderAPI::DrawIndex(const std::shared_ptr<VertexArray>& vertexarray)
     {
         glDrawElements(GL_TRIANGLES, vertexarray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+    }
+
+    void OpenGLRenderAPI::MeshShaderDraw(uint32_t taskcount)
+    {
+        glDrawMeshTasksNV(0, taskcount); 
     }
 
     void OpenGLRenderAPI::WireframeMode()

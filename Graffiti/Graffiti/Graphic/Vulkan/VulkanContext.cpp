@@ -17,12 +17,10 @@ namespace Graffiti {
         GraphicAPI_Version = "Vulkan" +
                             std::to_string(VK_VERSION_MAJOR(Device->properties.apiVersion)) + "." +
                             std::to_string(VK_VERSION_MINOR(Device->properties.apiVersion));
-       
     }
 
     VulkanContext::~VulkanContext()
     {
-       
         freeCommandBuffers();
     }
 

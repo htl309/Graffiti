@@ -23,11 +23,12 @@ namespace Graffiti {
 		
 		virtual ~Shader() {};
 
-		virtual void Bind() const =0;
+        virtual void Bind() const = 0;
 		virtual void Unbind() const =0;
 
 		virtual void Load(ShaderType shadertype, const std::string& filepath) = 0;
         virtual void AddPipeline(std::shared_ptr<PipelineConfigInfo> configInfo) {};
+		virtual void ClearPipeline() {};
 		virtual void Link() = 0;
 
 		
@@ -37,6 +38,8 @@ namespace Graffiti {
         //在创建管线之前就要调用这个函数
         virtual void UploadUniformBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding) = 0;
        
+		virtual void SetStorageBuffer(const std::string& name, const void* value) = 0;
+		virtual void UploadStorageBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding) = 0;
 	
 		virtual void UploadSceneData() = 0;
 		virtual void SetSceneData(const SceneData& scenedata) = 0;
@@ -48,7 +51,7 @@ namespace Graffiti {
 		//创建管线时候的纹理不等于上传的纹理
 		//创建时只是告诉管线，这里会有一个纹理
 		virtual void UploadTexture(const std::string& name, std::shared_ptr<Texture> texture,uint32_t set, uint32_t binding) = 0;
-        virtual void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) = 0;
+        virtual void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string modelname = {}) = 0;
 	};
 
 	class ShaderLibrary {

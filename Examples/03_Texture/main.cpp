@@ -5,18 +5,18 @@
 
 namespace Graffiti {
    
-    class BunnyApplication :public Application {
+    class MyApplication :public Application {
     public:
-        BunnyApplication() {
+        MyApplication() {
 
             PushLayer(new TextureLayer());
         }
-        ~BunnyApplication() {
+        ~MyApplication() {
         }
     };
 
     Application* CreateApplication() {
-        return new BunnyApplication();
+        return new MyApplication();
     }
 
 

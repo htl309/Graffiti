@@ -27,7 +27,7 @@ namespace Graffiti {
         VulkanDescriptorSetLayout(const VulkanDescriptorSetLayout&) = delete;
         VulkanDescriptorSetLayout& operator=(const VulkanDescriptorSetLayout&) = delete;
 
-        VkDescriptorSetLayout getDescriptorSetLayout() const {
+        VkDescriptorSetLayout getDescriptorSetLayout()  const {
             return descriptorSetLayout;
         }
 

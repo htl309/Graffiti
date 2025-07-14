@@ -118,7 +118,7 @@ namespace Graffiti {
         vkCmdPushConstants(
             context->getCurrentCommandBuffer(),
             GetVkPipelineLayout(),
-            VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_MESH_BIT_EXT | VK_SHADER_STAGE_TASK_BIT_EXT,
+            VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_TASK_BIT_NV | VK_SHADER_STAGE_MESH_BIT_NV,
             0,
             size,
             data);
@@ -127,12 +127,24 @@ namespace Graffiti {
     void VulkanPipelineLayout::UploadUniform(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
     {
         std::shared_ptr<UniformBuffer> buffer = UniformBuffer::Create(size, count, set, binding); 
-        m_Data[name] = buffer; 
+        m_UniformBuffer[name] = buffer;
         if (set >= m_SetCount) {
             m_SetCount = set + 1;
             m_DescriptorSetLayoutsInfos.push_back(VulkanDescriptorSetLayout::Builder()); 
         }
-        m_DescriptorSetLayoutsInfos[set].addBinding(binding, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS| VK_SHADER_STAGE_TASK_BIT_EXT| VK_SHADER_STAGE_MESH_BIT_EXT);
+        m_DescriptorSetLayoutsInfos[set].addBinding(binding, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS| VK_SHADER_STAGE_TASK_BIT_NV | VK_SHADER_STAGE_MESH_BIT_NV);
+    }
+
+    void VulkanPipelineLayout::UploadStorage(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
+    {
+        std::shared_ptr<StorageBuffer> buffer = StorageBuffer::Create(size, count, set, binding);
+        m_StorageBuffer[name] = buffer;
+        if (set >= m_SetCount) {
+            m_SetCount = set + 1;
+            m_DescriptorSetLayoutsInfos.push_back(VulkanDescriptorSetLayout::Builder());
+        }
+        m_DescriptorSetLayoutsInfos[set].addBinding(binding, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_TASK_BIT_NV | VK_SHADER_STAGE_MESH_BIT_NV);
+
     }
 
     void VulkanPipelineLayout::UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) {
@@ -165,6 +177,7 @@ namespace Graffiti {
         attributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT,    offsetof(Vertex, position) });
         attributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT,    offsetof(Vertex, normal) });
         attributeDescriptions.push_back({ 2, 0, VK_FORMAT_R32G32_SFLOAT,       offsetof(Vertex, texCoord) });
+     //   attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32B32_SFLOAT,       offsetof(Vertex, tangent) });
 
         return attributeDescriptions;
     }
@@ -176,7 +189,7 @@ namespace Graffiti {
         m_DescriptorSetPools.resize(m_SetCount);
         m_DescriptorSetLayouts.resize(m_SetCount);
 
-        std::vector<std::shared_ptr	<VulkanDescriptorWriter>> DescriptorWriter(m_SetCount);
+       m_DescriptorWriter.resize(m_SetCount);
 
 
         for (uint32_t i = 0; i < m_SetCount; ++i) {
@@ -184,14 +197,14 @@ namespace Graffiti {
             m_DescriptorSetLayouts[i] = m_DescriptorSetLayoutsInfos[i].build();
             uint32_t tempsetNumber = m_DescriptorSetLayoutsInfos[i].bindings.size();
             VulkanDescriptorPool::Builder DescriptorSetPoolsBuilder = VulkanDescriptorPool::Builder();
-                DescriptorSetPoolsBuilder.setMaxSets(tempsetNumber*2);
+                DescriptorSetPoolsBuilder.setMaxSets(tempsetNumber*100);
             for (int j = 0; j < tempsetNumber; j++)
             {
                 DescriptorSetPoolsBuilder.addPoolSize(
-                    m_DescriptorSetLayoutsInfos[i].bindings[j].descriptorType, tempsetNumber);  
+                    m_DescriptorSetLayoutsInfos[i].bindings[j].descriptorType, tempsetNumber*100);  
             }
             m_DescriptorSetPools[i] = DescriptorSetPoolsBuilder.build();
-            DescriptorWriter[i] = std::make_shared<VulkanDescriptorWriter>(*m_DescriptorSetLayouts[i], *m_DescriptorSetPools[i]);
+            m_DescriptorWriter[i] = std::make_shared<VulkanDescriptorWriter>(*m_DescriptorSetLayouts[i], *m_DescriptorSetPools[i]);
         }
 
         /* for (auto pair : m_Data) {
@@ -203,35 +216,45 @@ namespace Graffiti {
          }*/
          
         for (uint32_t i = 0; i < m_SetCount; ++i) { 
-            for (auto pair : m_Data) {
+            for (auto pair : m_UniformBuffer) {
 
                 if (pair.second->m_Set == i)
                 {
                     std::shared_ptr<VulkanUniformBuffer> buffer = std::dynamic_pointer_cast<VulkanUniformBuffer>(pair.second);
-                    DescriptorWriter[i]->writeBuffer(
+                    m_DescriptorWriter[i]->writeBuffer(
+                        buffer->m_Binding,
+                        &buffer->GetDescriptorInfo());  
+                }
+            }
+            for (auto pair : m_StorageBuffer) {
+
+                if (pair.second->m_Set == i)
+                {
+                    std::shared_ptr<VulkanStorageBuffer> buffer = std::dynamic_pointer_cast<VulkanStorageBuffer>(pair.second);
+                    m_DescriptorWriter[i]->writeBuffer(
                         buffer->m_Binding,
                         &buffer->GetDescriptorInfo());
+         
                 }
             }
             for (auto pair : m_Texture) {
                 std::shared_ptr<VulkanTexture> texture = std::dynamic_pointer_cast<VulkanTexture>(pair.second);
                 if (texture->GetSet() == i)
                 {
-                    DescriptorWriter[i]->writeImage(
+                    m_DescriptorWriter[i]->writeImage(
                         texture->GetBinding(),
                         &texture->GetDescriptorImageInfo()); 
                 }
             }
-           
 
-            DescriptorWriter[i]->build(m_DescriptorSets[i]);
+            m_DescriptorWriter[i]->build(m_DescriptorSets[i]);
         }
     }
 
     void VulkanPipelineLayout::createPipelineLayout()
     {
         VkPushConstantRange pushConstantRange{};
-        pushConstantRange.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_MESH_BIT_EXT | VK_SHADER_STAGE_TASK_BIT_EXT;
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_TASK_BIT_NV | VK_SHADER_STAGE_MESH_BIT_NV;
         pushConstantRange.offset = 0;
         pushConstantRange.size = sizeof(glm::mat4);
 

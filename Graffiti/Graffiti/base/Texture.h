@@ -15,7 +15,7 @@ namespace Graffiti {
             static std::shared_ptr<Texture> Create(const std::string& path);
             static std::shared_ptr<Texture> Create(const tinygltf::Image& image);
 
-			
+			std::string m_Name;
 	};
 
 }

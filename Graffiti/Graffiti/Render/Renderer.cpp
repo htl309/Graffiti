@@ -47,5 +47,26 @@ namespace Graffiti {
         vertexarray->Bind(); 
         RenderCommand::DrawIndex(vertexarray); 
     }
+   void Render::Submit(const std::shared_ptr<ModelLibrary>& modellib, const std::shared_ptr<Shader>& shader) {
+
+       for (int i = 0; i < modellib->m_VertexArrays.size(); i++) {
+           shader->Bind();
+           shader->SetSceneData(m_SceneData);
+           shader->SetTransform(modellib->m_Models[i]->m_Transform);
+           modellib->m_VertexArrays[i]->Bind();
+     
+           Material& material = modellib->m_Models[i]->m_Material; 
+
+           if(material.baseColorTexID != -1)
+           shader->SetTexture( modellib->m_Textures[material.baseColorTexID], 1, 0, modellib->m_Models[i]->m_Name);
+           if (material.metallicRoughTexID != -1)
+           shader->SetTexture(modellib->m_Textures[material.metallicRoughTexID], 1, 1, modellib->m_Models[i]->m_Name);
+           if (material.normalTexID !=-1)
+           shader->SetTexture(modellib->m_Textures[material.normalTexID], 1, 2, modellib->m_Models[i]->m_Name);
+
+           RenderCommand::DrawIndex(modellib->m_VertexArrays[i]);   
+       }
+
+    }
   
 }

@@ -15,7 +15,8 @@ namespace Graffiti {
 		m_BufferLayout = {
 				{ ShaderDataType::Float3,"inposition"},
 				{ ShaderDataType::Float3,"innormal"},
-				{ ShaderDataType::Float2,"intexCord" }
+				{ ShaderDataType::Float2,"intexCord" },
+			//	{ ShaderDataType::Float3,"intangent" }
 		};
 	}
 
@@ -87,4 +88,24 @@ namespace Graffiti {
 		glNamedBufferSubData(m_RenderID, offset, size, data);
 	}
 
+
+	OpenGLStorageBuffer::OpenGLStorageBuffer(uint32_t size, uint32_t count, uint32_t binding)
+	{
+		m_Set = size * count;
+		m_Binding = binding;
+
+		glCreateBuffers(1, &m_RenderID);
+		glNamedBufferData(m_RenderID, m_Set, nullptr, GL_DYNAMIC_DRAW); // TODO: investigate usage hint
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, m_RenderID);
+	}
+
+	OpenGLStorageBuffer::~OpenGLStorageBuffer()
+	{
+		glDeleteBuffers(1, &m_RenderID);
+	}
+
+	void OpenGLStorageBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
+	{
+		glNamedBufferSubData(m_RenderID, offset, size, data);
+	}
 }

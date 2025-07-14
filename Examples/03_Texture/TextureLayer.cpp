@@ -97,7 +97,7 @@ namespace Graffiti {
         shader->AddPipeline(configInfo2);
         shader->AddPipeline(configInfo3);
 
-        shader->UploadTexture("deer", m_Texture_deer, 1, 0); 
+        shader->UploadTexture("TexSampler", m_Texture_deer, 1, 0); 
         m_ShaderLibrary->Add(m_Name, shader); 
         m_ShaderLibrary->Get(m_Name)->Link(); 
 
@@ -150,7 +150,8 @@ namespace Graffiti {
         }
         ImGui::SameLine();
         if (ImGui::ImageButton("Texture_Graffiti1", Texture_Graffiti1_ID, ImVec2(190, 190), ImVec2(0, 1), ImVec2(1, 0))) {
-            m_ShaderLibrary->Get(m_Name)->SetTexture(m_Texture_Graffiti1, 1, 0);
+
+            m_ShaderLibrary->Get(m_Name)->SetTexture( m_Texture_Graffiti1, 1, 0);
             RenderCommand::SetDepthtest(true);
         }
 
@@ -160,7 +161,7 @@ namespace Graffiti {
         }
         ImGui::SameLine();
         if (ImGui::ImageButton("Texture", Texture_ID, ImVec2(190, 190), ImVec2(0, 1), ImVec2(1, 0))) {
-            m_ShaderLibrary->Get(m_Name)->SetTexture(m_Texture,1,0);
+       m_ShaderLibrary->Get(m_Name)->SetTexture(m_Texture,1,0);
             RenderCommand::SetDepthtest(true);
         }
         ImGui::End();

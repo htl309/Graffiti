@@ -41,7 +41,14 @@ namespace Graffiti {
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
-		if(Render::GetRenderAPI()== RenderAPI::API::Vulkan)  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		
+		if (Render::GetRenderAPI() == RenderAPI::API::OpenGL) {
+			//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);  // OpenGL 4.x
+			//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+			//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Core ģʽ
+		}else if(Render::GetRenderAPI()== RenderAPI::API::Vulkan)  
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
 		m_Window = glfwCreateWindow(int(props.Width), int(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
 		
 		glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -176,6 +183,6 @@ namespace Graffiti {
 	}
 	void WindowsWindow::ResetWindowResizedFlag()
 	{
-		m_Data.framebufferResized = true;
+		m_Data.framebufferResized = false;
 	}
 }

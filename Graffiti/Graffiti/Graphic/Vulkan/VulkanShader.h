@@ -33,9 +33,13 @@ namespace Graffiti {
 		virtual void SetUniformBuffer(const std::string& name, const void* value) override;
 		virtual void UploadUniformBuffer(const std::string& name, uint32_t size, uint32_t count ,uint32_t set, uint32_t binding ) override;
 		
-		virtual void UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) override;
-        virtual void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) override;
+		virtual void SetStorageBuffer(const std::string& name, const void* value) override;
+		virtual void UploadStorageBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding) override;
 
+		virtual void UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) override;
+        virtual void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string modelname) override;
+
+		virtual void ClearPipeline() { m_PipelineConfigInfos.clear(); }
 	private:
 		std::vector<char> readFile(const std::string& filepath);
 		void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);

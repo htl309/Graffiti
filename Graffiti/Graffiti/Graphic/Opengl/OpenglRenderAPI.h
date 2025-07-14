@@ -11,7 +11,8 @@ namespace Graffiti {
         virtual void SetClearColor(const glm::vec4& color) override;
         virtual void Clear() override;
         virtual void DrawIndex(const std::shared_ptr<VertexArray>& vertexarray)  override;
-   
+        virtual void MeshShaderDraw(uint32_t taskcount) override;
+
         virtual void WireframeMode() override;
         virtual void PolygonMode() override;
 

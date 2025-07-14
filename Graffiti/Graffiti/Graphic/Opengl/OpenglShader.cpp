@@ -160,24 +160,37 @@ namespace Graffiti {
 
 	void OpenGLShader::SetUniformBuffer(const std::string& name, const void* value)
 	{
-		m_Data[name]->SetData(value, m_Data[name]->m_Set, 0);
+		m_UniformBuffer[name]->SetData(value, m_UniformBuffer[name]->m_Set, 0);
 	}
 
 	void OpenGLShader::UploadUniformBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
 	{
 		//OpenGL没有set这个概念，统一设置为size的大小
-		m_Data[name] = UniformBuffer::Create(size, count, 0, m_Binding);
+		m_UniformBuffer[name] = UniformBuffer::Create(size, count, 0, m_Binding);
         m_Binding++;
+	}
+
+	void OpenGLShader::SetStorageBuffer(const std::string& name, const void* value)
+	{
+		m_StorageBuffer[name]->SetData(value, m_StorageBuffer[name]->m_Set, 0);
+	}
+
+	void OpenGLShader::UploadStorageBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
+	{
+		m_StorageBuffer[name] = StorageBuffer::Create(size, count, 0, m_Binding);
+		m_Binding++; 
 	}
 
 	void OpenGLShader::UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding)
 	{
+		texture->m_Name = name;
 		texture->Bind(binding);
 	}
 
-    void OpenGLShader::SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding)
+    void OpenGLShader::SetTexture( std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string modelname)
     {
         texture->Bind(binding);
-    }
+		glUniform1i(glGetUniformLocation(m_RenderID, texture->m_Name.data()), binding);
+	}
 
 }

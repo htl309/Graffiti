@@ -88,6 +88,8 @@ namespace Graffiti {
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
         //查找物理设备是否有我们需要的扩展
         bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+        std::vector<const char*>  FilterSupportedExtensions(VkPhysicalDevice device,std::vector<std::string>* unsupportedExtensions = nullptr);
+
         SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
         std::vector<const char*> getRequiredExtensions();
 
@@ -106,7 +108,7 @@ namespace Graffiti {
         const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
         const std::vector<const char*> deviceExtensions = { 
                                                             VK_KHR_SWAPCHAIN_EXTENSION_NAME,// 确保启用了 swapchain
-                                                           // VK_NV_MESH_SHADER_EXTENSION_NAME  // 启用 Mesh Shader 扩展 
+                                                            VK_NV_MESH_SHADER_EXTENSION_NAME  // 启用 Mesh Shader 扩展 
                                                           };
   
     public:

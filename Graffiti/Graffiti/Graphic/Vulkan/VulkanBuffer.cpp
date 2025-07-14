@@ -129,16 +129,47 @@ namespace Graffiti {
 
 	void VulkanUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 	{
-		m_UniformBuffer->writeToBuffer(data, sizeof(SceneData), 0);
+		m_UniformBuffer->writeToBuffer(data, VK_WHOLE_SIZE, 0);
 		m_UniformBuffer->flush(); 
 	}
 
 	VkDescriptorBufferInfo VulkanUniformBuffer::GetDescriptorInfo()
 	{
-		
 		return m_UniformBuffer->descriptorInfo();
 	}
+	
+	
+	VulkanStorageBuffer::VulkanStorageBuffer(uint32_t unitsize, uint32_t count, uint32_t set, uint32_t binding)
+	{
 
+		m_Set = set;
+		m_Binding = binding;
+
+		m_StorageBuffer = std::make_unique<VulkanBuffer>(
+			VulkanDevice::GetVulkanDevice(),
+			unitsize,
+			count,
+			VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		m_StorageBuffer->map();
+
+	}
+
+	VulkanStorageBuffer::~VulkanStorageBuffer()
+	{
+
+	}
+
+	void VulkanStorageBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
+	{
+		m_StorageBuffer->writeToBuffer(data, sizeof(SceneData), 0);
+		m_StorageBuffer->flush();
+	}
+
+	VkDescriptorBufferInfo VulkanStorageBuffer::GetDescriptorInfo()
+	{
+		return m_StorageBuffer->descriptorInfo();
+	}
 }
 
 namespace Graffiti{
@@ -156,7 +187,6 @@ namespace Graffiti{
 
 	VulkanBuffer::~VulkanBuffer()
 	{
-		
 		unmap(); 
 		vkDestroyBuffer(Device->device(), buffer, nullptr);
 		vkFreeMemory(Device->device(), memory, nullptr);

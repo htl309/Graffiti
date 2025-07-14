@@ -24,9 +24,12 @@ namespace Graffiti {
 		virtual void SetUniformBuffer(const std::string& name, const void* value) override;
 		virtual void UploadUniformBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set = 0, uint32_t binding = 0) override;
 
+		virtual void SetStorageBuffer(const std::string& name, const void* value) override;
+		virtual void UploadStorageBuffer(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding) override;
+
 		//由于OpenGL没有set这个概念，所以binding相当于槽了
 		virtual void UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) override;
-		virtual void SetTexture( std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding) override;
+		virtual void SetTexture(std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding, const std::string modelname) override;
 
 	private:
 		uint32_t m_RenderID;
@@ -36,7 +39,8 @@ namespace Graffiti {
 
         std::shared_ptr < UniformBuffer> m_SceneDataBuffer;
 
-        std::unordered_map<std::string, std::shared_ptr<UniformBuffer>> m_Data;
+        std::unordered_map<std::string, std::shared_ptr<UniformBuffer>> m_UniformBuffer;
+        std::unordered_map<std::string, std::shared_ptr<StorageBuffer>> m_StorageBuffer;
         uint32_t m_Binding = 0;
 	};
 	

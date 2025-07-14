@@ -383,6 +383,7 @@ namespace Graffiti {
 		
 		//判断物理设备是否支持需要的扩展
 		bool extensionsSupported = checkDeviceExtensionSupport(device);
+	
 		//查询物理设备是否支持交换链的某些操作
 		bool swapChainAdequate = false;
 		if (extensionsSupported) {
@@ -392,7 +393,7 @@ namespace Graffiti {
 		//获取物理设备的特性
 		VkPhysicalDeviceFeatures supportedFeatures;
 		vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
-		
+	
 		//我们需要的功能都支持的物理设备，就是我们需要的物理设备
 		return indices.isComplete() && extensionsSupported && swapChainAdequate &&
 			supportedFeatures.samplerAnisotropy;
@@ -416,7 +417,11 @@ namespace Graffiti {
 				break;
 			}
 		}
-		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+		if (physicalDevice == VK_NULL_HANDLE) {
+			physicalDevice = devices[0];
+			GF_CORE_WARN("no suitalbe PhysicalDevice!");
+		}
+		vkGetPhysicalDeviceProperties(physicalDevice, &properties); 
 	}
 	void VulkanDevice::createLogicalDevice()
 	{
@@ -447,6 +452,12 @@ namespace Graffiti {
 		 //
 		 //vkGetPhysicalDeviceFeatures2(physicalDevice, &features2);
 
+		std::vector<std::string> unsupported;
+		std::vector<const char*> enabledExtensions = FilterSupportedExtensions(physicalDevice, &unsupported);
+		// 打印一下哪些扩展被跳过
+		for (const auto& ext : unsupported) {
+			GF_CORE_WARN( "Device does not support extension: {0}" , ext);
+		}
 		VkDeviceCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		//createInfo.pNext = &features2;
@@ -454,8 +465,8 @@ namespace Graffiti {
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
 		createInfo.pEnabledFeatures = NULL;
-		createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(enabledExtensions.size());
+		createInfo.ppEnabledExtensionNames = enabledExtensions.data();
 
 		// might not really be necessary anymore because device specific validation layers
 		// have been deprecated
@@ -553,6 +564,31 @@ namespace Graffiti {
 			}
 			return requiredExtensions.empty();
 		
+	}
+	std::vector<const char*> VulkanDevice::FilterSupportedExtensions(VkPhysicalDevice device, std::vector<std::string>* unsupportedExtensions )
+	{
+		uint32_t extensionCount = 0;
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+		std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+		std::set<std::string> availableSet;
+		for (const auto& ext : availableExtensions) {
+			availableSet.insert(ext.extensionName);
+		}
+
+		std::vector<const char*> enabledExtensions;
+		for (const char* req : deviceExtensions) {
+			if (availableSet.count(req)) {
+				enabledExtensions.push_back(req); // 支持的加入
+			}
+			else if (unsupportedExtensions) {
+				unsupportedExtensions->emplace_back(req); // 不支持的也记录一下（可选）
+			}
+		}
+
+		return enabledExtensions;
 	}
 	SwapChainSupportDetails VulkanDevice::querySwapChainSupport(VkPhysicalDevice device)
 	{

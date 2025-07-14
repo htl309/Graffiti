@@ -107,7 +107,7 @@ namespace Graffiti {
 			}
 		}
 
-		m_VertexBuffers.push_back(vertexBuffer);
+		m_VertexBuffers = vertexBuffer;
 	}
 
 	void OpenGLVertexArray::AddIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)

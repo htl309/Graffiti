@@ -29,8 +29,7 @@ namespace Graffiti {
 		void ProcessKeyboard(CameraMoveDir direction, float deltaTime);
 		void ProcessMouseMovement(float xoffset, float yoffset, float deltaTime);
 
-		//// 可选：缩放（鼠标滚轮）
-		//void ProcessMouseScroll(float yoffset);
+
 		
 		glm::mat4 GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 		glm::vec3 GetCameraPosition() const { return m_Position; }

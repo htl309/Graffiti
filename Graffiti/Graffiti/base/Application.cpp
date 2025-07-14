@@ -55,7 +55,6 @@ namespace Graffiti {
 			m_TimeStep = time - m_LastTime;
 			m_LastTime = time;
 			
-          
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerStack) {
@@ -69,7 +68,7 @@ namespace Graffiti {
 				/*auto [x, y] = Input::GetMousePostion();
 				GF_CORE_TRACE("{0},{1}", x, y);*/
 			} 
-
+            
             GraphicsContext::G_Context[m_ContextIndex]->SwapBuffers();  
 			GraphicsContext::G_Context[m_ContextIndex]->EndFrame();  
 		}

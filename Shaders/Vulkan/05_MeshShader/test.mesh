@@ -1,0 +1,75 @@
+#version 460
+#extension GL_NV_mesh_shader: require
+
+layout(local_size_x = 1) in;
+
+layout(max_vertices = 6) out;
+layout(max_primitives = 2) out;
+layout(triangles) out;
+
+
+struct PointLight {
+    vec4 position;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+};
+layout(set = 0, binding = 0) uniform SceneData {
+    mat4 u_ViewProjectionMatrix;
+    PointLight light;
+    vec3 viewPos;
+} scene;
+layout(push_constant) uniform PushConstants {
+    mat4 u_transform;
+} pushConstants;
+// 片元 shader 接收的颜色输出（location 0）
+layout(location = 0) out  vec3 outColor[];
+
+void main()
+{
+    vec2 positions[6] = vec2[](
+        vec2(-0.8, -0.5),
+        vec2(-0.2, -0.5),
+        vec2(-0.5,  0.5),
+
+        vec2( 0.2, -0.5),
+        vec2( 0.8, -0.5),
+        vec2( 0.5,  0.5)
+    );
+
+    vec3 colors[6] = vec3[](
+        vec3(1, 0, 0),
+        vec3(0, 1, 0),
+        vec3(0, 0, 1),
+
+        vec3(1, 1, 0),
+        vec3(0, 1, 1),
+        vec3(1, 0, 1)
+    );
+
+    // 填充每个顶点的位置信息
+    for (int i = 0; i < 3; ++i) {
+        gl_MeshVerticesNV[i].gl_Position = scene.u_ViewProjectionMatrix *pushConstants.u_transform*vec4(positions[i], 0.0, 1.0);
+    }
+ for (int i = 3; i < 6; ++i) {
+        gl_MeshVerticesNV[i].gl_Position = pushConstants.u_transform*vec4(positions[i], 0.0, 1.0);
+    }
+    // 设置两个三角形的 primitive 索引
+	gl_PrimitiveIndicesNV[0] = 0;
+	gl_PrimitiveIndicesNV[1] = 1;
+	gl_PrimitiveIndicesNV[2] = 2;
+
+	gl_PrimitiveIndicesNV[3] = 3;
+	gl_PrimitiveIndicesNV[4] = 4;
+	gl_PrimitiveIndicesNV[5] = 5;
+
+    // 为两个 primitive 设置输出颜色（插值会在 FS 中生效）
+    outColor[0] =  scene.light.position.xyz;
+	outColor[1] =  vec3(1,0,0);
+	outColor[2] =  vec3(1,0,0);
+	outColor[3] =  scene.light.position.xyz;
+	outColor[4] =  scene.light.position.xyz;
+	outColor[5] =  vec3(0,1,0);
+    // 告诉驱动输出6个顶点、2个primitive
+    gl_PrimitiveCountNV=2;
+}
