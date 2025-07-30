@@ -43,10 +43,9 @@ namespace Graffiti {
             //Bunnyƒ£–Õº”‘ÿ//////////////////////////////////////////////////////////////////////////////////
             std::shared_ptr<Model> bunny  ;
             Model::LoadGLTFModel("Models/bunny.gltf", bunny);
-
             m_BunnyVertexArray = VertexArray::Create();
-
             m_BunnyVertexArray->AddModel(bunny);
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
             std::shared_ptr<Model> deer ;
             Model::LoadGLTFModel("Models/deer.gltf", deer);
@@ -76,7 +75,8 @@ namespace Graffiti {
             m_ShaderLibrary->Get(m_Name)->Link();   
     
 
-            m_camera->SetTarget(m_BunnyVertexArray->m_Model->boundingbox);
+            m_camera->SetTarget(bunny->boundingbox);
+
         }
 
         void OnImGuiRender() override {
@@ -135,7 +135,7 @@ namespace Graffiti {
                     float dx = Input::GetMouseX() - lastX;
                     float dy = Input::GetMouseY() - lastY;
                
-                    m_camera->ProcessMouseMovement(dx, dy, ts);
+                    m_camera->ProcessMouseMovement(dx, dy);
                     lastX = Input::GetMouseX();
                     lastY = Input::GetMouseY();
                 }
@@ -178,7 +178,7 @@ namespace Graffiti {
         float lastX = 0.0, lastY = 0.0;
         bool m_firstMouse = true;
         SceneData m_Scene;
-        PointLight light;
+   
 
         bool IsWireFrame = 0;
         int model = 1;

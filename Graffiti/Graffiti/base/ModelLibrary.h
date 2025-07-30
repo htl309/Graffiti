@@ -33,7 +33,7 @@ namespace Graffiti {
                         auto model = std::make_shared<Model>();
                         model->m_Transform = globalTransform;
                         model->m_Name = mesh.name;
-                        GF_INFO(model->m_Name);
+         
                         // === 顶点 POSITION ===
                         const auto& posIt = primitive.attributes.find("POSITION");
                         if (posIt == primitive.attributes.end()) continue;
@@ -69,12 +69,12 @@ namespace Graffiti {
                         size_t vertexCount = posAccessor.count;
                         model->m_Vertices.resize(vertexCount);
                         for (size_t i = 0; i < vertexCount; ++i) {
-                            model->m_Vertices[i].position = glm::make_vec3(&posBuffer[i * 3]);
-                            model->boundingbox.minPos = glm::min(model->boundingbox.minPos, model->m_Vertices[i].position);
-                            model->boundingbox.maxPos = glm::max(model->boundingbox.maxPos, model->m_Vertices[i].position);
+                            model->m_Vertices[i].position = glm::make_vec4(&posBuffer[i * 3]);
+                            model->boundingbox.minPos = glm::min(model->boundingbox.minPos, glm::make_vec3(&posBuffer[i * 3]));
+                            model->boundingbox.maxPos = glm::max(model->boundingbox.maxPos, glm::make_vec3(&posBuffer[i * 3]));
                             if (normalBuffer)
-                                model->m_Vertices[i].normal = glm::make_vec3(&normalBuffer[i * 3]);
-                            if (texBuffer)
+                                model->m_Vertices[i].normal = glm::make_vec4(&normalBuffer[i * 3]);
+                            if (texBuffer);
                                 model->m_Vertices[i].texCoord = glm::make_vec2(&texBuffer[i * 2]);
                         }
 

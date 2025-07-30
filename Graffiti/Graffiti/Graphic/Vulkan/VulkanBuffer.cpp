@@ -129,7 +129,7 @@ namespace Graffiti {
 
 	void VulkanUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 	{
-		m_UniformBuffer->writeToBuffer(data, VK_WHOLE_SIZE, 0);
+		m_UniformBuffer->writeToBuffer(data, VK_WHOLE_SIZE, offset);
 		m_UniformBuffer->flush(); 
 	}
 
@@ -162,7 +162,7 @@ namespace Graffiti {
 
 	void VulkanStorageBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 	{
-		m_StorageBuffer->writeToBuffer(data, sizeof(SceneData), 0);
+		m_StorageBuffer->writeToBuffer(data, VK_WHOLE_SIZE, offset);
 		m_StorageBuffer->flush();
 	}
 

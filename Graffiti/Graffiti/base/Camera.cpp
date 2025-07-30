@@ -108,10 +108,10 @@ namespace Graffiti {
 		}
         UpdateViewMatrix();
 	}
-    void Camera::ProcessMouseMovement(float xoffset, float yoffset, float deltaTime)
+    void Camera::ProcessMouseMovement(float xoffset, float yoffset)
     {
-        m_Azimuth -= xoffset * m_Sensitivity * deltaTime;
-        m_Elevation += yoffset * m_Sensitivity * deltaTime;
+        m_Azimuth -= xoffset * m_Sensitivity;
+        m_Elevation += yoffset * m_Sensitivity;
 
         // 限制仰角范围（-89°到89°之间）
         if (m_Elevation > 89.0f) m_Elevation = 89.0f;

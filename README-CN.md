@@ -2,7 +2,7 @@
 
 [![badge](https://img.shields.io/badge/GitHub-181717?style=plastic&logo=github&logoColor=white)](https://github.com/htl309/Graffiti ) [![Gitee](https://img.shields.io/badge/Gitee-FF3B3F?style=plastic&logo=gitee&logoColor=white)](https://gitee.com/htl309/Graffiti)
 
-![Graffiti](/resource/logo/LOGO_INVERT.png "Graffiti")
+![Graffiti](resource/logo/LOGO_INVERT.png "Graffiti")
 
 ### API与平台
 
@@ -13,17 +13,17 @@
 
 ### 图形算法 
 
-- [x] 三角形							（2025.6.4）
-- [x] 网格模式                        （2025.6.10）
-- [x] 相机                                （2025.6.10）
-- [x] Bling-phong光照          （2025.6.13）
-- [x] 几何着色器                    （2025.6.18）
-- [x] 纹理                                （2025.7.1）
-- [ ] 材质与PBR渲染
+- [x] 三角形	
+- [x] 网格模式         
+- [x] 相机  
+- [x] Bling-phong光照    
+- [x] 几何着色器 
+- [x] 纹理              
+- [x] 材质与PBR渲染
 - [ ] 阴影
 - [ ] 延迟渲染与多光源
-- [ ] 网格着色器
-- [ ] PCB混合管线
+- [x] 网格着色器
+- [x] [PCB混合管线](https://github.com/htl309/pcbbuilder)
 
 ### 环境
 
@@ -75,3 +75,11 @@
 #### 04_PBR
 
 ![image-20250714152102126](resource/pic/Readme-4.png)
+
+#### 05_MeshShader
+
+![image-20250722232904935](resource/pic/Readme-5.png)
+
+### [PCB Hybrid PipeLine](https://github.com/htl309/pcbbuilder)
+
+![t4](resource/pic/t4.png)

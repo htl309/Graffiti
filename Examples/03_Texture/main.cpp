@@ -24,7 +24,7 @@ namespace Graffiti {
 #define GF_PLATFORM_WINDOWS 
 
 #define GF_RENDERAPI_VULKAN
-//#define GF_RENDERAPI_OPENGL
+#define GF_RENDERAPI_OPENGL
 
 #include"Graffiti/EntryPoint.h"
 

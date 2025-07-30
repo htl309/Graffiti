@@ -30,8 +30,10 @@ namespace Graffiti {
         else {
             RenderCommand::PolygonMode();
         }
-
     }
+
+
+
     uint32_t Render::ContextIndex()
     {
         return RenderCommand::ContextIndex();

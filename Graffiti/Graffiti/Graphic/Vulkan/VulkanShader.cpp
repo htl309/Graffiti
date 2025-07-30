@@ -104,8 +104,7 @@ namespace Graffiti {
 
 		m_PipelineLayout->buildDescriptorSets(); 
 		m_PipelineLayout->createPipelineLayout();	
-        GF_INFO("size: {0}", m_PipelineLayout->m_UniformBuffer.size());
-        GF_INFO("stoage size: {0}", m_PipelineLayout->m_StorageBuffer.size());
+
         std::vector<VulkanPipeline>& pipelines = m_RenderAPI->m_PipelineMap[m_Name]; 
 		
         //∞Û∂®µΩset=0,bing=0…œ

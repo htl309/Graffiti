@@ -13,7 +13,7 @@ namespace Graffiti {
         ~CameraControl();
 
         void KeyMovement(TimeStep& ts);
-        void MouseMovement(TimeStep& ts);
+        void MouseMovement();
         void MouseScroll(Event& event);
 
         void OnEvent(Event& event);

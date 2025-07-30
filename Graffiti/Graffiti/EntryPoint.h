@@ -14,8 +14,8 @@
 		Graffiti::Log::Init();
 		GF_INFO("Graffiti Engine Starting");
 
-		auto app = Graffiti::CreateApplication();
-		app->run(); 
+		auto app = Graffiti::CreateApplication();    
+		app->run();     
 		delete app; 
 
         return 0;

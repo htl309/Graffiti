@@ -27,7 +27,7 @@ namespace Graffiti {
         void SetTarget(BoundingBox& b);
 		// 交互控制
 		void ProcessKeyboard(CameraMoveDir direction, float deltaTime);
-		void ProcessMouseMovement(float xoffset, float yoffset, float deltaTime);
+		void ProcessMouseMovement(float xoffset, float yoffset);
 
 
 		
@@ -49,7 +49,7 @@ namespace Graffiti {
         float m_Distance;         // 相机到目标的距离
         float m_Azimuth;          // 方位角（水平旋转）
         float m_Elevation;        // 仰角（垂直旋转）
-        float m_Sensitivity=20.0;      // 鼠标灵敏度
+        float m_Sensitivity=0.3;      // 鼠标灵敏度
 
 
 		float m_MovementSpeed = 3.0f;

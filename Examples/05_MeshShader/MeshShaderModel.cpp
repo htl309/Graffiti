@@ -17,24 +17,24 @@ namespace Graffiti {
         meshlet_triangles.resize(rLastMeshlet.triangle_offset + ((size_t(rLastMeshlet.triangle_count) * 3 + 3) & ~3));
         meshlets.resize(meshlet_count);
 
-        /* for (auto i : meshlets) {
-             std::cout << "triangle_count: " << i.triangle_count << " , ";
-             std::cout << "vertex_count: " << i.vertex_count << " , ";
-             std::cout << "triangle_offset: " << i.triangle_offset << " ,  ";
-             std::cout << "vertex_offset: " << i.vertex_offset << std::endl;
-         }
+        //for (auto i : meshlets) {
+        //     std::cout << "triangle_count: " << i.triangle_count << " , ";
+        //     std::cout << "vertex_count: " << i.vertex_count << " , ";
+        //     std::cout << "triangle_offset: " << i.triangle_offset << " ,  ";
+        //     std::cout << "vertex_offset: " << i.vertex_offset << std::endl;
+        // }
 
-         for (int i = 0; i < meshlet_vertices.size(); i++) {
-             if (i % 64 == 0) std::cout << std::endl << std::endl;
-             std::cout << int(meshlet_vertices[i]) << " , ";
-         }
-         std::cout << "vertexsize: " << meshlet_vertices.size();
-         for (int i = 0; i < meshlet_triangles.size(); i++) {
-             if (i % 288 == 0) std::cout << std::endl << std::endl;
-             std::cout << int(meshlet_triangles[i]) << " , ";
-         }
-         std::cout << "meshlet_vertices: " << meshlet_vertices.size() << std::endl;
-         std::cout << "meshlet_triangles: " << meshlet_triangles.size()<<std::endl;*/
+        // for (int i = 0; i < meshlet_vertices.size(); i++) {
+        //     if (i % 64 == 0) std::cout << std::endl << std::endl;
+        //     std::cout << int(meshlet_vertices[i]) << " , ";
+        // }
+        // std::cout << "vertexsize: " << meshlet_vertices.size();
+        // for (int i = 0; i < meshlet_triangles.size(); i++) {
+        //     if (i % 288 == 0) std::cout << std::endl << std::endl;
+        //     std::cout << int(meshlet_triangles[i]) << " , ";
+        // }
+         //std::cout << "meshlet_vertices: " << meshlet_vertices.size() << std::endl;
+         //std::cout << "meshlet_triangles: " << meshlet_triangles.size()<<std::endl;
          // std::cout << "meshlet_count: " << meshlet_count << std::endl;
     }
 }

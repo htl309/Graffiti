@@ -9,7 +9,8 @@ namespace Graffiti {
     public:
         MyApplication() {
 
-            PushLayer(new MeshShaderLayer());
+            PushLayer(new MeshShaderLayer()); 
+
         }
         ~MyApplication() {
         }

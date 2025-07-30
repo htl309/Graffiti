@@ -15,7 +15,7 @@ namespace Graffiti {
         static void OnWindowResize(uint32_t width, uint32_t height);
         static void EndScene();
         static void SetMode(bool wireframe);
-
+        static void SetMeshShader(bool meshshader);
         static uint32_t ContextIndex();
 
 

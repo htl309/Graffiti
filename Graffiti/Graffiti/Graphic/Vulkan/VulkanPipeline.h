@@ -105,6 +105,7 @@ namespace Graffiti {
             pipelineInfo.pDepthStencilState = configInfo->depthStencilInfo;
             pipelineInfo.pDynamicState = configInfo->dynamicStateInfo;
 
+
             pipelineInfo.layout = configInfo->m_VulkanPipelineLayout->m_PipelineLayout;
             pipelineInfo.renderPass = configInfo->renderPass;
             pipelineInfo.subpass = configInfo->subpass;  

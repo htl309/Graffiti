@@ -2,6 +2,8 @@
 #include "VulkanPipeline.h"
 #include "VulkanContext.h"
 #include "Graffiti/Render/Renderer.h"
+#include "Graffiti/Scene/Model.h"
+
 namespace Graffiti {
 
 
@@ -22,9 +24,15 @@ namespace Graffiti {
         depthStencilInfo = new VkPipelineDepthStencilStateCreateInfo();
         dynamicStateInfo = new VkPipelineDynamicStateCreateInfo();
 
-        inputAssemblyInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        inputAssemblyInfo->topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        inputAssemblyInfo->primitiveRestartEnable = VK_FALSE;
+        if(!HasState(state, PipelineState::MeshShaderPipeLine))
+        {
+            inputAssemblyInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+            inputAssemblyInfo->topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+            inputAssemblyInfo->primitiveRestartEnable = VK_FALSE;
+
+            bindingDescriptions = VulkanPipeline::getBindingDescriptions();
+            attributeDescriptions = VulkanPipeline::getAttributeDescriptions();
+        }
 
         viewportInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
         viewportInfo->viewportCount = 1;
@@ -95,8 +103,6 @@ namespace Graffiti {
         dynamicStateInfo->flags = 0;
 
 
-        bindingDescriptions = VulkanPipeline::getBindingDescriptions();
-        attributeDescriptions = VulkanPipeline::getAttributeDescriptions();
     }
 
     PipelineConfigInfo::~PipelineConfigInfo()
@@ -138,7 +144,7 @@ namespace Graffiti {
     void VulkanPipelineLayout::UploadStorage(const std::string& name, uint32_t size, uint32_t count, uint32_t set, uint32_t binding)
     {
         std::shared_ptr<StorageBuffer> buffer = StorageBuffer::Create(size, count, set, binding);
-        m_StorageBuffer[name] = buffer;
+        m_StorageBuffer.insert({ name ,buffer});
         if (set >= m_SetCount) {
             m_SetCount = set + 1;
             m_DescriptorSetLayoutsInfos.push_back(VulkanDescriptorSetLayout::Builder());
@@ -207,23 +213,18 @@ namespace Graffiti {
             m_DescriptorWriter[i] = std::make_shared<VulkanDescriptorWriter>(*m_DescriptorSetLayouts[i], *m_DescriptorSetPools[i]);
         }
 
-        /* for (auto pair : m_Data) {
-                 std::shared_ptr<VulkanUniformBuffer>& buffer = std::dynamic_pointer_cast<VulkanUniformBuffer>(pair.second);
-                 GF_CORE_TRACE("{0},{1}",pair.first, buffer->m_Set);
-                 DescriptorWriter[buffer->m_Set]->writeBuffer(
-                     buffer->m_Binding,
-                     &buffer->GetDescriptorInfo());
-         }*/
-         
-        for (uint32_t i = 0; i < m_SetCount; ++i) { 
+
+        std::vector<VkDescriptorBufferInfo> infos;
+        for (uint32_t i = 0; i < m_SetCount; ++i) {
             for (auto pair : m_UniformBuffer) {
 
                 if (pair.second->m_Set == i)
                 {
                     std::shared_ptr<VulkanUniformBuffer> buffer = std::dynamic_pointer_cast<VulkanUniformBuffer>(pair.second);
+                    infos.push_back(buffer->GetDescriptorInfo());
                     m_DescriptorWriter[i]->writeBuffer(
                         buffer->m_Binding,
-                        &buffer->GetDescriptorInfo());  
+                        &infos.back());
                 }
             }
             for (auto pair : m_StorageBuffer) {
@@ -231,11 +232,12 @@ namespace Graffiti {
                 if (pair.second->m_Set == i)
                 {
                     std::shared_ptr<VulkanStorageBuffer> buffer = std::dynamic_pointer_cast<VulkanStorageBuffer>(pair.second);
+                    infos.push_back(buffer->GetDescriptorInfo());
                     m_DescriptorWriter[i]->writeBuffer(
                         buffer->m_Binding,
-                        &buffer->GetDescriptorInfo());
-         
+                        &infos.back());
                 }
+
             }
             for (auto pair : m_Texture) {
                 std::shared_ptr<VulkanTexture> texture = std::dynamic_pointer_cast<VulkanTexture>(pair.second);
@@ -243,21 +245,22 @@ namespace Graffiti {
                 {
                     m_DescriptorWriter[i]->writeImage(
                         texture->GetBinding(),
-                        &texture->GetDescriptorImageInfo()); 
+                        &texture->GetDescriptorImageInfo());
                 }
             }
 
             m_DescriptorWriter[i]->build(m_DescriptorSets[i]);
         }
+
     }
 
     void VulkanPipelineLayout::createPipelineLayout()
     {
         VkPushConstantRange pushConstantRange{};
-        pushConstantRange.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_TASK_BIT_NV | VK_SHADER_STAGE_MESH_BIT_NV;
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_TASK_BIT_NV ;
         pushConstantRange.offset = 0;
         pushConstantRange.size = sizeof(glm::mat4);
-
+    
         std::vector<VkDescriptorSetLayout> descriptorSetLayouts(m_SetCount);
         for (int i = 0; i < m_SetCount; i++) {
             descriptorSetLayouts[i] = m_DescriptorSetLayouts[i]->getDescriptorSetLayout();

@@ -28,7 +28,7 @@ namespace Graffiti {
         if (Input::IsKeyPressed(GF_KEY_DOWN))
             m_camera->ProcessKeyboard(CameraMoveDir::BACKWARD, ts);
     }
-    void CameraControl::MouseMovement(TimeStep& ts)
+    void CameraControl::MouseMovement()
     {
         if (Input::IsMouseButtonPressed(GF_MOUSE_BUTTON_LEFT)) {
             if (m_firstMouse == true) {
@@ -40,7 +40,7 @@ namespace Graffiti {
             float dx = Input::GetMouseX() - lastX;
             float dy = Input::GetMouseY() - lastY;
 
-            m_camera->ProcessMouseMovement(dx, dy, ts);
+            m_camera->ProcessMouseMovement(dx, dy);
             lastX = Input::GetMouseX();
             lastY = Input::GetMouseY();
 

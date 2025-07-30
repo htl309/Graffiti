@@ -24,7 +24,7 @@ namespace Graffiti {
 		samplerLayoutBinding.descriptorCount = 1;
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT|VK_SHADER_STAGE_MESH_BIT_NV;
+		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		bindings[binding] = samplerLayoutBinding;
 		return *this;
@@ -152,6 +152,7 @@ namespace Graffiti {
 		write.descriptorCount = 1;
 
 		writes.push_back(write);
+ 
 		return *this;
 	}
 	VulkanDescriptorWriter& VulkanDescriptorWriter::writeImage(uint32_t binding, VkDescriptorImageInfo* imageInfo)

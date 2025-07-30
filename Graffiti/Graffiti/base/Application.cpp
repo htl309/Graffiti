@@ -48,13 +48,13 @@ namespace Graffiti {
 		
 		
 		while (m_Running) {
-           
+      
             GraphicsContext::G_Context[m_ContextIndex]->BeginFrame(); 
 			GraphicsContext::G_Context[m_ContextIndex]->BeginSwapChainRenderPass(); 
 			float time = (float)glfwGetTime();
 			m_TimeStep = time - m_LastTime;
 			m_LastTime = time;
-			
+          
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerStack) {
@@ -65,8 +65,6 @@ namespace Graffiti {
 					layer->OnImGuiRender(); 
 				}
 				m_ImGuiLayer->End();
-				/*auto [x, y] = Input::GetMousePostion();
-				GF_CORE_TRACE("{0},{1}", x, y);*/
 			} 
             
             GraphicsContext::G_Context[m_ContextIndex]->SwapBuffers();  

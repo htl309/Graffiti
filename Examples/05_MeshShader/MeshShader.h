@@ -27,9 +27,14 @@ namespace Graffiti {
 
         MeshShaderModel meshDeer;
         MeshShaderModel meshBunny;
-
+        std::vector< glm::vec4 > Deervertices;
+        std::vector< glm::vec4 > Bunnyvertices;
         CameraControl m_CameraControl;
 
+        uint32_t size1;
+        uint32_t size2;
+        uint32_t size3;
+        uint32_t size4;
 
         bool IsWireFrame = 0;
         int model = 1;

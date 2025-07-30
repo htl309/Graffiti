@@ -9,7 +9,7 @@ namespace Graffiti {
         Common = 0,
         WireFrame = GF_BIT(0),	//0000 0001
         DepthTestDisable = GF_BIT(1),			//0000 0010
-        ISMeshShader = GF_BIT(2),			//0000 0010
+        MeshShaderPipeLine= GF_BIT(2),
         // 可继续扩展更多状态...
     };
     // 按位或

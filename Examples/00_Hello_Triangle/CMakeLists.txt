@@ -5,9 +5,6 @@ link_directories(
 ${CMAKE_SOURCE_DIR}/build/Graffiti/Release
 )
 
-
-
-
 add_executable(${Example_Name_00}
 main.cpp
 )

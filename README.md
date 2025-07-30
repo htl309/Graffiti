@@ -2,9 +2,7 @@
 
 [![badge](https://img.shields.io/badge/GitHub-181717?style=plastic&logo=github&logoColor=white)](https://github.com/htl309/Graffiti ) [![Gitee](https://img.shields.io/badge/Gitee-FF3B3F?style=plastic&logo=gitee&logoColor=white)](https://gitee.com/htl309/Graffiti)
 
-
-
-![Graffiti](/resource/logo/Graffiti_LOGO.png "Graffiti")
+![Graffiti](resource/logo/Graffiti_LOGO.png "Graffiti")
 
 ### API and Platforms
 
@@ -15,17 +13,17 @@
 
 ### Graphics Algorithms
 
-- [x] Triangle						       2025.6.4
-- [x] WireframeMode                2025.6.10
-- [x] Camera                               2025.6.10
-- [x] Blinn-Phong Lighting        2025.6.13
-- [x] Geometry Shader              2025.6.18
-- [x] Texture                                2025.7.1
-- [ ] Materials and PBR
+- [x] Triangle						
+- [x] WireframeMode       
+- [x] Camera                   
+- [x] Blinn-Phong Lighting    
+- [x] Geometry Shader  
+- [x] Texture            
+- [x] Materials and PBR
 - [ ] Shadows
 - [ ] Deferred Rendering
-- [ ] Mesh Shader
-- [ ] PCB Hybrid Pipeline
+- [x] Mesh Shader
+- [x] [PCB Hybrid Pipeline](https://github.com/htl309/pcbbuilder)
 
 ### Environment
 
@@ -77,3 +75,10 @@
 
 ![image-20250714152102126](resource/pic/Readme-4.png)
 
+#### 05_MeshShader
+
+![image-20250722232904935](resource/pic/Readme-5.png)
+
+### [PCB Hybrid PipeLine](https://github.com/htl309/pcbbuilder)
+
+![t4](resource/pic/t4.png)

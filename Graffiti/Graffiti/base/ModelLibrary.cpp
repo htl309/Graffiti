@@ -16,7 +16,7 @@ namespace Graffiti {
 
     void ModelLibrary::LoadGLTFModel(std::string filepath, std::shared_ptr<ModelLibrary>& modellibrary)
     {
-      //  if(modellibrary==nullptr)
+        //  if(modellibrary==nullptr)
         modellibrary = std::make_shared<ModelLibrary>();
         tinygltf::TinyGLTF loader;
         tinygltf::Model gltfmodel;
@@ -35,24 +35,24 @@ namespace Graffiti {
 
         modellibrary->LoadGLTFModels(gltfmodel);
 
-      
+
         modellibrary->CreateVertexArray();
-       
+
         return;
     }
 
-	
 
-	void ModelLibrary::CreateVertexArray()
-	{
-     
-        for(const auto model : m_Models)
+
+    void ModelLibrary::CreateVertexArray()
+    {
+
+        for (const auto model : m_Models)
         {
-           auto VertexArray = VertexArray::Create();
-           VertexArray->AddModel(model);
-           m_VertexArrays.push_back(VertexArray);
+            auto VertexArray = VertexArray::Create();
+            VertexArray->AddModel(model);
+            m_VertexArrays.push_back(VertexArray);
         }
-	}
+    }
 
     void ModelLibrary::ApplyTransformToBoundingBox(BoundingBox& box, const glm::mat4& transform)
     {

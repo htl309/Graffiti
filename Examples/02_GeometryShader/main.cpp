@@ -64,7 +64,7 @@ namespace Graffiti {
             if (!ImGui::GetIO().WantCaptureMouse) {
                 // 只有在 ImGui 没有占用鼠标时，才允许相机控制逻辑生效
                 m_CameraControl.KeyMovement(ts);
-                m_CameraControl.MouseMovement(ts);
+                m_CameraControl.MouseMovement();
             }
           
             m_Scene.ViewProjectionMatrix = m_CameraControl.GetViewProjectionMatrix();

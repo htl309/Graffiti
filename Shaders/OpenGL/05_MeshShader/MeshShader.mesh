@@ -1,11 +1,7 @@
-#version 450
+#version 460
 
 //启用meshshader
 #extension GL_NV_mesh_shader: require
-//启用uint8_t和int8_t
-#extension GL_EXT_shader_8bit_storage: require
-#extension GL_EXT_shader_16bit_storage: require
-
 
 //设置工作组中线程的大小，一个工作组有32个线程
 //将max_vertices的数量依次放入这些工作组中,要是有64个vertices，那就需要循环两次去执行
@@ -33,7 +29,7 @@ struct PointLight {
     vec4 diffuse;
     vec4 specular;
 };
-layout(set = 0, binding = 0) uniform SceneData {
+layout(std140, binding = 0) uniform SceneData {
     mat4 u_ViewProjectionMatrix;
     PointLight light;
     vec3 viewPos;
@@ -47,27 +43,28 @@ struct Meshlet {
 	uint triangle_count;
 };
 //读取从CPU那里发送过来的数据
-layout(set=1,binding = 0) readonly buffer Meshlets { Meshlet meshlets[]; };
-layout(set=1,binding = 1) readonly buffer MeshletVertices { uint meshlet_vertices[]; };
-layout(set=1,binding = 2) readonly buffer MeshletTriangles { uint meshlet_triangles[]; };
+layout(std430, binding = 1) readonly buffer Meshlets { Meshlet meshlets[]; };
+layout(std430, binding = 2) readonly buffer MeshletVertices { uint meshlet_vertices[]; };
+layout(std430, binding = 3) readonly buffer MeshletTriangles { uint meshlet_triangles[]; };
 
 struct Vertex {
 		vec4 position;
        // vec4 normal;
        	//vec2 texCoord;
 };
-layout(set=1,binding = 3) readonly buffer _Vertexes { Vertex vertexes[]; };
+layout(std430, binding = 4) readonly buffer _Vertexes { Vertex vertexes[]; };
 
-
-layout(push_constant) uniform PushConstants {
-    mat4 u_transform;
-} pushConstants;
+uniform mat4 u_transform;
 
 //规定输出的图元是三角形，当然也可以是线段什么的
 //规定顶点最大64个，三角形最多124个，这个是在CPU上会提前预设好的限制,目的是为了匹配GPU的限制
 //就是一个meshlet中最多只有64个顶点和124个三角形。
 layout(triangles, max_vertices = maxvertex, max_primitives = maxtri) out;
-layout(location = 0) out vec3 fragColor[];
+
+out VertexOut
+{
+	vec3 color;
+} fragColor[];
 
 //不同的网格颜色用以达到不同网格分组的效果
 vec3 meshletcolors[10] = {
@@ -110,11 +107,11 @@ void main() {
 		Vertex thisvertex = vertexes[vertexIndex];
 
 		//输出顶点位置
-		vec4 positionWorld = pushConstants.u_transform * vec4(thisvertex.position.xyz,1.0);
+		vec4 positionWorld = u_transform * vec4(thisvertex.position.xyz,1.0);
 		gl_MeshVerticesNV[localVertexIndex].gl_Position = scene.u_ViewProjectionMatrix * positionWorld;
 	
 		//获取一个颜色，并进行输出
-		fragColor[localVertexIndex]= meshletcolors[groupIndex%10];
+		fragColor[localVertexIndex].color= meshletcolors[groupIndex%10];
 	}
 
 	//要除个四，因为索引写入的逻辑是这样的:小索引的长度是8bit，而一个整型有32bit。因此把四个数字看成一个数字进行写入

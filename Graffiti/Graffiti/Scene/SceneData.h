@@ -26,4 +26,7 @@ namespace Graffiti {
         PointLight Light;
         glm::vec3 CameraPosition;
 	};
+
+
+   
 }

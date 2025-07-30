@@ -27,6 +27,14 @@ void Graffiti::VulkanRenderAPI::SetDepthtest(bool set)
         m_State = m_State | PipelineState::DepthTestDisable;
 }
 
+void Graffiti::VulkanRenderAPI::SetMeshShader(bool set)
+{
+    if (!set)
+        m_State = m_State & ~PipelineState::MeshShaderPipeLine;
+    else
+        m_State = m_State | PipelineState::MeshShaderPipeLine;
+}
+
 void Graffiti::VulkanRenderAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 {
 }

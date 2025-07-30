@@ -18,13 +18,13 @@ namespace Graffiti {
 
             
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            GF_INFO(1);
+     
             auto shader = Shader::Create(m_Name, {
                     {ShaderType::VertexShader, "04_PBR/PBR.vert"},
                     {ShaderType::FragmentShader, "04_PBR/PBR.frag"}
                 }
             );
-            GF_INFO(2);
+
             std::shared_ptr<PipelineConfigInfo> configInfo = std::make_shared<PipelineConfigInfo>(PipelineState::WireFrame);
             shader->AddPipeline(configInfo);
 
@@ -36,12 +36,10 @@ namespace Graffiti {
 
             m_ShaderLibrary->Add(m_Name, shader);
             m_ShaderLibrary->Get(m_Name)->Link();
-            GF_INFO(3);
-            
+    
             m_CameraControl.SetTarget(m_chess->boundingbox);
 
             m_Scene.Light.position = glm::vec4(1, 1, 1, 1.0f);
-            GF_INFO(4);
         }
 
         void OnImGuiRender() override {
@@ -79,7 +77,7 @@ namespace Graffiti {
             if (!ImGui::GetIO().WantCaptureMouse) {
                 // 只有在 ImGui 没有占用鼠标时，才允许相机控制逻辑生效
                 m_CameraControl.KeyMovement(ts);
-                m_CameraControl.MouseMovement(ts);
+                m_CameraControl.MouseMovement();
             }
 
             m_Scene.ViewProjectionMatrix = m_CameraControl.GetViewProjectionMatrix();
@@ -139,7 +137,7 @@ namespace Graffiti {
 #define GF_RENDERAPI_VULKAN
 
 
- //#define GF_RENDERAPI_OPENGL
+ #define GF_RENDERAPI_OPENGL
 
 #include"Graffiti/EntryPoint.h"
 

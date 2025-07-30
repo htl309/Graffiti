@@ -20,6 +20,7 @@ namespace Graffiti {
 		inline static API GetRenderAPI() { return s_API; }
 
         virtual void SetDepthtest(bool set) =0;
+        virtual void SetMeshShader(bool set) {};
         virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) =0;
         virtual void SetClearColor(const glm::vec4& color) = 0;
         virtual void Clear() = 0;

@@ -1,0 +1,88 @@
+#version 450
+#extension GL_NV_mesh_shader : require
+
+
+
+//设置工作组中线程的大小，一个工作组有32个线程
+//将max_vertices的数量依次放入这些工作组中,要是有64个vertices，那就需要循环两次去执行
+//有些meshlet中的vertices数量没有到64.那么最后几个点就重复执行一下
+const uint myShaderGroupSize = 32;
+const uint maxvertex = 64;
+const uint maxtri = 126;
+
+//计算在myShaderGroupSize大小的一个工作组中，处理64个顶点需要几次
+//这里需要两次，因为顶点数量最大是64个，工作组大小是32个，所以需要两次
+const uint VertexLoops = (maxvertex + myShaderGroupSize - 1) / myShaderGroupSize;
+
+//计算需要循环几次才能把索引都写入
+//124个三角形也就是说有3*124个索引
+//4 * myShaderGroupSize意思是一次可以写入四个索引数字
+const uint TriangleLoops = (3 * maxtri + 4 * myShaderGroupSize - 1) / (myShaderGroupSize * 4);
+
+
+//设置工作组中线程的大小，一个工作组有32个线程
+layout(local_size_x = myShaderGroupSize) in;
+
+
+
+struct PointLight {
+    vec4 position;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+};
+layout(std140, binding = 0) uniform SceneData {
+    mat4 u_ViewProjectionMatrix;
+    PointLight light;
+    vec3 viewPos;
+} scene;
+
+uniform mat4 u_transform;
+// 片元 shader 接收的颜色输出（location 0）
+
+layout(triangles, max_vertices = maxvertex, max_primitives = maxtri) out;
+
+
+out VertexOut
+{
+	vec3 color;
+} fragColor[];
+
+vec2 positions[6] = vec2[](
+	vec2(-0.8, -0.5),
+	vec2(-0.2, -0.5),
+	vec2(-0.5,  0.5),
+
+	vec2( 0.2, -0.5),
+	vec2( 0.8, -0.5),
+	vec2( 0.5,  0.5)
+);
+
+void main()
+{
+    // 填充每个顶点的位置信息
+    for (int i = 0; i < 3; ++i) {
+        gl_MeshVerticesNV[i].gl_Position = u_transform*vec4(positions[i],0, 1.0);
+    }
+    for (int i = 3; i < 6; ++i) {
+        gl_MeshVerticesNV[i].gl_Position = u_transform*vec4(positions[i], 0.0, 1.0);
+    }
+   		
+         // 设置两个三角形的 primitive 索引
+	gl_PrimitiveIndicesNV[0] = 0;
+	gl_PrimitiveIndicesNV[1] = 1;
+	gl_PrimitiveIndicesNV[2] = 2;
+
+	gl_PrimitiveIndicesNV[3] = 3;
+	gl_PrimitiveIndicesNV[4] = 4;
+	gl_PrimitiveIndicesNV[5] = 5;
+    // 为两个 primitive 设置输出颜色（插值会在 FS 中生效）
+    fragColor[0].color =  vec3(2,0,0);
+	fragColor[1].color =  vec3(1,0,0);
+	fragColor[2].color =  vec3(1,0,0);
+	fragColor[3].color =  vec3(1,0,0);
+	fragColor[4].color =  vec3(0,0,0);
+	fragColor[5].color =  vec3(0,0,0);
+    // 告诉驱动输出6个顶点、2个primitive
+    gl_PrimitiveCountNV=2;
+}

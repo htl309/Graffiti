@@ -15,6 +15,9 @@ namespace Graffiti {
         inline static void SetDepthtest(bool set) {
             s_RenderAPI->SetDepthtest(set);
         }
+        inline static void SetMeshShader(bool set) {
+            s_RenderAPI->SetMeshShader(set);
+        }
         inline static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
         {
             s_RenderAPI->SetViewport(x, y, width, height);

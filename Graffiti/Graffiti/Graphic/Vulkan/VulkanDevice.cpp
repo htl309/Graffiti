@@ -443,14 +443,14 @@ namespace Graffiti {
 		}
 
 		
-		// VkPhysicalDeviceMeshShaderFeaturesNV meshShaderFeatures{};
-		 //meshShaderFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV;
+		 VkPhysicalDeviceMeshShaderFeaturesNV meshShaderFeatures{};
+		 meshShaderFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV;
 
-		 //VkPhysicalDeviceFeatures2 features2{};
-		 //features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-		 //features2.pNext = &meshShaderFeatures; // 将 Mesh Shader 特性结构链接到特性查询中 
+		 VkPhysicalDeviceFeatures2 features2{};
+		 features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		 features2.pNext = &meshShaderFeatures; // 将 Mesh Shader 特性结构链接到特性查询中 
 		 //
-		 //vkGetPhysicalDeviceFeatures2(physicalDevice, &features2);
+		 vkGetPhysicalDeviceFeatures2(physicalDevice, &features2);
 
 		std::vector<std::string> unsupported;
 		std::vector<const char*> enabledExtensions = FilterSupportedExtensions(physicalDevice, &unsupported);
@@ -460,7 +460,7 @@ namespace Graffiti {
 		}
 		VkDeviceCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		//createInfo.pNext = &features2;
+		createInfo.pNext = &features2;
 		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
 

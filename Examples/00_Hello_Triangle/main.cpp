@@ -95,10 +95,7 @@ namespace Graffiti {
 				KeyPressedEvent& e = (KeyPressedEvent&)event;
 				if (e.GetKeyCode() == GF_KEY_TAB)
 					GF_TRACE("Tab key is pressed (event)!");
-
 			}
-
-			
 		}
 	private:
 		std::string m_Name;

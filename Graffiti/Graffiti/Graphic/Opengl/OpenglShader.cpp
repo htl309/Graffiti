@@ -55,21 +55,31 @@ namespace Graffiti {
 			break;
 		}
 		case TaskShader:
+            GL_Shader = glCreateShader(GL_TASK_SHADER_NV);
 			break;
 		case MeshShader:
+            GL_Shader = glCreateShader(GL_MESH_SHADER_NV);
+
 			break;
 		default:
 			break;
 		}
+       
+
 		std::ifstream ShaderFile;
 		ShaderFile.open("Shaders/OpenGL/"+filepath);
-		
+        GF_ASSERT(ShaderFile.is_open(), "ShaderFile can't open!");
+
+
 		std::stringstream ShaderStream;
 		ShaderStream << ShaderFile.rdbuf();
 		ShaderFile.close();
 		std::string shaderCodestring = ShaderStream.str();
+        if (shaderCodestring.empty()) {
+            std::cerr << "ERROR: Shader source code is empty!" << std::endl;
+        }
 		const GLchar* source = shaderCodestring.c_str();
-		
+ 
 		glShaderSource(GL_Shader, 1, &source, 0);
 
 		// Compile the vertex shader
@@ -91,7 +101,7 @@ namespace Graffiti {
 
 			// Use the infoLog as you see fit.
 			GF_CORE_ERROR("Shader Compliation Failed!");
-			GF_CORE_ERROR("0", infoLog.data());
+            GF_CORE_ERROR("{0}", infoLog.data());
 			// In this simple program, we'll just leave
 			return;
 		}
@@ -179,6 +189,7 @@ namespace Graffiti {
 	{
 		m_StorageBuffer[name] = StorageBuffer::Create(size, count, 0, m_Binding);
 		m_Binding++; 
+      
 	}
 
 	void OpenGLShader::UploadTexture(const std::string& name, std::shared_ptr<Texture> texture, uint32_t set, uint32_t binding)
